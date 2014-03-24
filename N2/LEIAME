@@ -1,0 +1,51 @@
+#
+# BUG: As vezes a tela fica preta e tem que reiniciar a aplicação. BUG do MesaGL, no Windows não ocorre.
+#
+
+Os passos de compilação irão funcionar em ambientes que possuam o MAKE e o g++.
+
+No windows usar mingw32-make ao invez de make.
+
+Compilando:
+
+	make clean
+
+	make exec<numero_exercício>
+
+Exemplo:
+
+	make clean
+	make exec1 ou make all
+
+Compilando sem o make (Linux):
+
+	g++ -o exec1.exe exec1.cpp -lGL -lGLU -lglut -Wall
+
+Executando:
+
+./exec1.exe
+
+#
+# TODOS os testes foram feitos usando ambiente Linux (OpenSuse),
+# a biblioteca Mesa 3D Graphics Library e o compilador g++ 4.8
+#
+#		- Mesa is an open-source implementation of the OpenGL specification - a system for rendering interactive 3D graphics. 
+#
+# Foram feitos alguns testes usando ambiente Windows 8 64 e OpenGL Windows.
+
+#
+# Instalação no Windows (http://web.cs.wpi.edu/~gogo/courses/mingw/)
+#
+
+Instalar o MingW 32 (http://web.cs.wpi.edu/~gogo/courses/mingw/MinGW-5.1.4.exe)
+
+Baixar o GLUT: http://web.cs.wpi.edu/~gogo/courses/mingw/winglut.zip
+
+Installing GLUT
+
+Download this GLUT archive to your "C:\mingw" directory.
+Unpack the archive, and place the "GL\glut.h" file in "C:\mingw\include\gl" directory, the "winlib\libglut32win.a" file into the "C:\mingw\lib" directory, and "glut32.dll" into the "C:\windows\system32" directory (or leave it in the same directory as your executable).
+When compiling, use #include <gl/glut.h> to include the glut header.
+When linking, use "-lglut32win" in the link line of your make file.
+
+A DLL do glut32 deve estar junto com o EXE. Por algum motivo não acha no C:\Windows\System32. Ou copiar a DLL para C:\Windows\System
