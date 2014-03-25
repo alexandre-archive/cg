@@ -19,8 +19,17 @@
 
 struct Point
 {
-    float x, y;
+    float X, Y;
 };
+
+double calculateX(double angle, double radius)
+{
+    return (radius * cos(M_PI * angle / 180.0));
+}
+double calculateY(double angle, double radius)
+{
+    return (radius * sin(M_PI * angle / 180.0));
+}
 
 inline void DrawCircle(float cx, float cy, float radius, int points, GLenum primitive = GL_LINE_LOOP)
 {
@@ -42,10 +51,10 @@ inline void DrawCircle(float cx, float cy, float radius, int points, GLenum prim
 inline void DrawTriangle(Point p1, Point p2, Point p3, GLenum primitive = GL_LINE_LOOP)
 {
     glBegin(primitive);
-        glVertex2f(p1.x, p1.y);
-        glVertex2f(p2.x, p2.y);
-        glVertex2f(p3.x, p3.y);
-    glEnd();    
+        glVertex2f(p1.X, p1.Y);
+        glVertex2f(p2.X, p2.Y);
+        glVertex2f(p3.X, p3.Y);
+    glEnd();
 }
 
 inline void DrawXYAxes()

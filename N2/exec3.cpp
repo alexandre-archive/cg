@@ -46,14 +46,14 @@ void display()
 
     Point p1, p2, p3;
     // Ponto esquerdo.
-    p1.x = -100.0f;
-    p1.y = 100.0f;
+    p1.X = -100.0f;
+    p1.Y = 100.0f;
     // Ponto direito.
-    p2.x = 100.0f;
-    p2.y = 100.0f;
+    p2.X = 100.0f;
+    p2.Y = 100.0f;
     // Ponto inferior.
-    p3.x = 0.0f;
-    p3.y = -100.0f;
+    p3.X = 0.0f;
+    p3.Y = -100.0f;
 
     DrawTriangle(p1, p2, p3);
 
