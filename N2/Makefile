@@ -24,11 +24,16 @@ exec4:
 	$(info Compilando exercicio 4...)
 	g++ -o exec4$(EXT) exec4.cpp $< $(CFLAGS) $(GLFLAGS)
 
-all: exec1 exec2 exec3 exec4
+exec7:
+	$(info Compilando exercicio 7...)
+	g++ -o exec7$(EXT) exec7.cpp $< $(CFLAGS) $(GLFLAGS)
+
+all: exec1 exec2 exec3 exec4 exec7
 
 clean:
 	rm -f exec1$(EXT)
 	rm -f exec2$(EXT)
 	rm -f exec3$(EXT)
 	rm -f exec4$(EXT)
+	rm -f exec7$(EXT)
 	rm -f *.o
