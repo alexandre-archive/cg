@@ -43,19 +43,18 @@ void display()
     // Eixo X e Y.
     DrawXYAxes();
 
-    // Reta.
-    glColor3f(0.0, 0.0, 0.0);
-
     // Atualiza posição da linha.
     updatePosition();
 
+    glColor3f(0.0, 0.0, 0.0);
+    // Reta.
     // Linha
     glLineWidth(2.0f);
     glBegin(GL_LINES);
         glVertex2f(p1.X, p1.Y);
         glVertex2f(p2.X, p2.Y);
     glEnd();
-    // Pontos
+    // Pontos na extremidade da linha.
     glPointSize(4.0F);
     glBegin(GL_POINTS);
         glVertex2f(p1.X, p1.Y);
@@ -150,25 +149,28 @@ void keyboard(unsigned char key, int mousePositionX, int mousePositionY)
 
         case 'Q':
         case 'q':
-
+            p1.X--;
             glutPostRedisplay();
         break;
 
         case 'W':
         case 'w':
-
+            p1.X++;
             glutPostRedisplay();
         break;
 
         case 'A':
         case 'a':
-
+            radius--;
+            if (radius < 0) radius = 0;
+            cout << "Radius: " << radius << "\n";
             glutPostRedisplay();
         break;
 
         case 'S':
         case 's':
-
+            radius++;
+            cout << "Radius: " << radius << "\n";
             glutPostRedisplay();
         break;
 
@@ -206,7 +208,7 @@ int main(int argc, char **argv)
     glutInitWindowPosition(300, 250);
     glutInitWindowSize(width, height);
 
-    glutCreateWindow("N2 - Exercicio 2");
+    glutCreateWindow("N2 - Exercicio 7");
 
     glutDisplayFunc(display);
     glutKeyboardFunc(keyboard);
