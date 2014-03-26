@@ -15,6 +15,8 @@ GLfloat ortho2D_minX = -400.0f,
         ortho2D_minY = -400.0f,
         ortho2D_maxY =  400.0f;
 
+Point p1, p2;
+
 int ZOOM = 100;
 
 void display()
@@ -35,25 +37,30 @@ void display()
     glColor3f(0.0, 0.0, 0.0);
     glLineWidth(1.2f);
     // Circulo maior.
-    DrawCircle(150, 150, 120, 250);
+    DrawCircle(p1.X, p1.Y, 120, 250);
     // Circulo menor.
-    DrawCircle(150, 150, 40, 250);
+    DrawCircle(p2.X, p2.Y, 40, 250);
     // Ponto no centro do circulo menor.
     glPointSize(4.0f);
     glBegin(GL_POINTS);
-        glVertex2f(150, 150);
+        glVertex2f(p2.X, p2.Y);
     glEnd();
 
     glutSwapBuffers();
 }
 
-void initialize ()
+void initialize()
 {
     glDisable(GL_TEXTURE_2D);
     glDisableClientState(GL_TEXTURE_COORD_ARRAY);
     glDisable(GL_LIGHTING);
 
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+
+    p1.X = 150;
+    p1.Y = 150;
+    p2.X = 150;
+    p2.Y = 150;
 }
 
 void zoom_in()
@@ -104,21 +111,25 @@ void keyboard(unsigned char key, int mousePositionX, int mousePositionY)
 
         case 'E':
         case 'e':
+            p2.X--;
             glutPostRedisplay();
         break;
 
         case 'D':
         case 'd':
+            p2.X++;
             glutPostRedisplay();
         break;
 
         case 'C':
         case 'c':
+            p2.Y++;
             glutPostRedisplay();
         break;
 
         case 'B':
         case 'b':
+            p2.Y--;
             glutPostRedisplay();
         break;
 
