@@ -22,6 +22,11 @@ struct Point
     float X, Y;
 };
 
+struct BBox
+{
+    float minX, maxX, minY, maxY;
+};
+
 double calculateX(double angle, double radius)
 {
     return (radius * cos(M_PI * angle / 180.0));

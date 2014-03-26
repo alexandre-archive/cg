@@ -17,6 +17,11 @@ GLfloat ortho2D_minX = -400.0f,
 
 Point p1, p2;
 
+BBox box;
+
+GLfloat radiusMajor = 120,
+        radiusMinor = 40;
+
 int ZOOM = 100;
 
 void display()
@@ -37,9 +42,9 @@ void display()
     glColor3f(0.0, 0.0, 0.0);
     glLineWidth(1.2f);
     // Circulo maior.
-    DrawCircle(p1.X, p1.Y, 120, 250);
+    DrawCircle(p1.X, p1.Y, radiusMajor, 250);
     // Circulo menor.
-    DrawCircle(p2.X, p2.Y, 40, 250);
+    DrawCircle(p2.X, p2.Y, radiusMinor, 250);
     // Ponto no centro do circulo menor.
     glPointSize(4.0f);
     glBegin(GL_POINTS);
