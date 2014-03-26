@@ -14,7 +14,7 @@ N2 examples produce 2D Graphics. See above.
 
 #### exec2.cpp
 
-<embed width="420" height="315" src="https://www.youtube.com/embed/8D89l208cog" type="application/x-shockwave-flash"></embed>
+[![02](http://img.youtube.com/vi/8D89l208cog/0.jpg)](https://www.youtube.com/embed/8D89l208cog)
 
 #### exec3.cpp
 
@@ -22,19 +22,19 @@ N2 examples produce 2D Graphics. See above.
 
 #### exec4.cpp
 
-<embed width="420" height="315" src="https://www.youtube.com/embed/Qs3uzP3WL2w" type="application/x-shockwave-flash"></embed>
+[![04](http://img.youtube.com/vi/Qs3uzP3WL2w/0.jpg)](https://www.youtube.com/embed/Qs3uzP3WL2w)
 
 #### exec5.cpp
 
-<embed width="420" height="315" src="https://www.youtube.com/embed/O7bf7bMmpK4" type="application/x-shockwave-flash"></embed>
+[![05](http://img.youtube.com/vi/O7bf7bMmpK4/0.jpg)](https://www.youtube.com/embed/O7bf7bMmpK4)
 
 #### exec6.cpp
 
-<embed width="420" height="315" src="https://www.youtube.com/embed/yaxHi7jWg7k" type="application/x-shockwave-flash"></embed>
+[![06](http://img.youtube.com/vi/yaxHi7jWg7k/0.jpg)](https://www.youtube.com/embed/yaxHi7jWg7k)
 
 #### exec7.cpp
 
-<embed width="420" height="315" src="https://www.youtube.com/embed/BwvsaqVkhAI" type="application/x-shockwave-flash"></embed>
+[![07](http://img.youtube.com/vi/BwvsaqVkhAI/0.jpg)](https://www.youtube.com/embed/BwvsaqVkhAI)
 
 
   [1]: http://gcg.inf.furb.br/cg/N2_files/imagens/CG_N2-01.png
