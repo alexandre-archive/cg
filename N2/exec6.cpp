@@ -65,6 +65,29 @@ void display()
     glutSwapBuffers();
 }
 
+void changeBBoxColor(float d)
+{
+    if (d > (radiusMajor * radiusMajor) - 5)
+    {
+        r = 1.0f;
+        g = 0.0f;
+        b = 0.0f;
+    }
+    else
+    {
+        r = 0.0f;
+        g = 1.0f;
+        b = 0.0f;
+    }
+}
+
+bool isInside()
+{
+    double d = euclideanDistance(p1.X, p1.Y, p2.X, p2.Y);
+    changeBBoxColor(d);
+    return d <= radiusMajor * radiusMajor;
+}
+
 void initialize()
 {
     glDisable(GL_TEXTURE_2D);
@@ -98,8 +121,6 @@ void zoom_out()
 
 void keyboard(unsigned char key, int mousePositionX, int mousePositionY)
 {
-    double d = 0.0;
-
     switch (key)
     {
         case KEY_ESCAPE:
@@ -137,65 +158,55 @@ void keyboard(unsigned char key, int mousePositionX, int mousePositionY)
         case 'E':
         case 'e':
             p2.X--;
-            d = euclideanDistance(p1.X, p1.Y, p2.X, p2.Y);
-            if (d <= radiusMajor * radiusMajor)
-            {
-                glutPostRedisplay();
-            }
-            else
+
+            if (!isInside())
             {
                 p2.X += 2;
             }
+
+            glutPostRedisplay();
         break;
 
         case 'D':
         case 'd':
             p2.X++;
-            d = euclideanDistance(p1.X, p1.Y, p2.X, p2.Y);
-            if (d <= radiusMajor * radiusMajor)
-            {
-                glutPostRedisplay();
-            }
-            else
+
+            if (!isInside())
             {
                 p2.X -= 2;
             }
+
+            glutPostRedisplay();
         break;
 
         case 'C':
         case 'c':
             p2.Y++;
-            d = euclideanDistance(p1.X, p1.Y, p2.X, p2.Y);
-            if (d <= radiusMajor * radiusMajor)
-            {
-                glutPostRedisplay();
-            }
-            else
+
+            if (!isInside())
             {
                 p2.Y -= 2;
             }
+
+            glutPostRedisplay();
         break;
 
         case 'B':
         case 'b':
             p2.Y--;
-            d = euclideanDistance(p1.X, p1.Y, p2.X, p2.Y);
-            if (d <= radiusMajor * radiusMajor)
-            {
-                glutPostRedisplay();
-            }
-            else
+
+            if (!isInside())
             {
                 p2.Y += 2;
             }
+
+            glutPostRedisplay();
         break;
 
         default:
             cout << "Invalid key pressed: " << key << "\n";
         break;
     }
-
-    cout << d << "\n";
 }
 
 int main(int argc, char **argv)
