@@ -29,6 +29,7 @@ struct BBox
 
 double euclideanDistance(float x1, float y1, float x2, float y2)
 {
+    /*
     double x = x1 - x2;
     double y = y1 - y2;
     double dist;
@@ -37,6 +38,12 @@ double euclideanDistance(float x1, float y1, float x2, float y2)
     dist = sqrt(dist);
 
     return dist; // floor(dist);
+    */
+
+    double x = x1 - x2;
+    double y = y1 - y2;
+
+    return abs(pow(x, 2) + pow(y, 2));
 }
 
 double calculateX(double angle, double radius)

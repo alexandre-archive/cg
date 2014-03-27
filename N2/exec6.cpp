@@ -138,7 +138,7 @@ void keyboard(unsigned char key, int mousePositionX, int mousePositionY)
         case 'e':
             p2.X--;
             d = euclideanDistance(p1.X, p1.Y, p2.X, p2.Y);
-            if (d <= radiusMajor)
+            if (d <= radiusMajor * radiusMajor)
             {
                 glutPostRedisplay();
             }
@@ -152,7 +152,7 @@ void keyboard(unsigned char key, int mousePositionX, int mousePositionY)
         case 'd':
             p2.X++;
             d = euclideanDistance(p1.X, p1.Y, p2.X, p2.Y);
-            if (d <= radiusMajor)
+            if (d <= radiusMajor * radiusMajor)
             {
                 glutPostRedisplay();
             }
@@ -166,7 +166,7 @@ void keyboard(unsigned char key, int mousePositionX, int mousePositionY)
         case 'c':
             p2.Y++;
             d = euclideanDistance(p1.X, p1.Y, p2.X, p2.Y);
-            if (d <= radiusMajor)
+            if (d <= radiusMajor * radiusMajor)
             {
                 glutPostRedisplay();
             }
@@ -180,7 +180,7 @@ void keyboard(unsigned char key, int mousePositionX, int mousePositionY)
         case 'b':
             p2.Y--;
             d = euclideanDistance(p1.X, p1.Y, p2.X, p2.Y);
-            if (d <= radiusMajor)
+            if (d <= radiusMajor * radiusMajor)
             {
                 glutPostRedisplay();
             }
