@@ -62,6 +62,34 @@ inline void DrawTriangle(Point p1, Point p2, Point p3, GLenum primitive = GL_LIN
     glEnd();
 }
 
+inline void DrawRectangle(float minX, float maxX, float minY, float maxY)
+{
+    glBegin(GL_LINE_LOOP);
+        // Linha inferior.
+        glVertex2f(minX, minY);
+        // Linha lateral esquerda.
+        glVertex2f(minX, maxY);
+        // Linha superior.
+        glVertex2f(maxX, maxY);
+        // Linha lateral direita.
+        glVertex2f(maxX, minY);
+    glEnd();
+}
+
+inline void DrawRectangle(Point p1, Point p2, Point p3, Point p4)
+{
+    glBegin(GL_LINE_LOOP);
+        // Linha inferior.
+        glVertex2f(p1.X, p1.Y);
+        // Linha lateral esquerda.
+        glVertex2f(p2.X, p2.Y);
+        // Linha superior.
+        glVertex2f(p3.X, p3.Y);
+        // Linha lateral direita.
+        glVertex2f(p4.X, p4.Y);
+    glEnd();
+}
+
 inline void DrawXYAxes()
 {
     glLineWidth(1.0f);
