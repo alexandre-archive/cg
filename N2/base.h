@@ -27,6 +27,18 @@ struct BBox
     float minX, maxX, minY, maxY;
 };
 
+double euclideanDistance(float x1, float y1, float x2, float y2)
+{
+    double x = x1 - x2;
+    double y = y1 - y2;
+    double dist;
+
+    dist = pow(x, 2) + pow(y, 2);
+    dist = sqrt(dist);
+
+    return dist; // floor(dist);
+}
+
 double calculateX(double angle, double radius)
 {
     return (radius * cos(M_PI * angle / 180.0));
