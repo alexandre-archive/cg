@@ -19,10 +19,14 @@ Point p1, p2;
 
 BBox box;
 
-GLfloat radiusMajor = 120,
-        radiusMinor = 40;
+GLfloat radiusMajor = 120.0f,
+        radiusMinor = 40.0f;
 
 int ZOOM = 100;
+
+float r = 0.0f,
+      g = 1.0f,
+      b = 0.0f;
 
 void display()
 {
@@ -43,6 +47,13 @@ void display()
     glLineWidth(1.2f);
     // Circulo maior.
     DrawCircle(p1.X, p1.Y, radiusMajor, 250);
+
+    // BBox circulo maior.
+    glColor3f(r, g, b);
+    glLineWidth(1.0f);
+    DrawRectangle(box.minX, box.maxX, box.minY, box.maxY);
+
+    glColor3f(0.0, 0.0, 0.0);
     // Circulo menor.
     DrawCircle(p2.X, p2.Y, radiusMinor, 250);
     // Ponto no centro do circulo menor.
@@ -50,11 +61,6 @@ void display()
     glBegin(GL_POINTS);
         glVertex2f(p2.X, p2.Y);
     glEnd();
-
-    // Cubo
-    glColor3f(0.0, 1.0, 0.0);
-    glLineWidth(1.0f);
-    DrawRectangle(box.minX, box.maxX, box.minY, box.maxY);
 
     glutSwapBuffers();
 }
@@ -92,6 +98,8 @@ void zoom_out()
 
 void keyboard(unsigned char key, int mousePositionX, int mousePositionY)
 {
+    double d = 0.0;
+
     switch (key)
     {
         case KEY_ESCAPE:
@@ -129,31 +137,65 @@ void keyboard(unsigned char key, int mousePositionX, int mousePositionY)
         case 'E':
         case 'e':
             p2.X--;
-            glutPostRedisplay();
+            d = euclideanDistance(p1.X, p1.Y, p2.X, p2.Y);
+            if (d <= radiusMajor)
+            {
+                glutPostRedisplay();
+            }
+            else
+            {
+                p2.X += 2;
+            }
         break;
 
         case 'D':
         case 'd':
             p2.X++;
-            glutPostRedisplay();
+            d = euclideanDistance(p1.X, p1.Y, p2.X, p2.Y);
+            if (d <= radiusMajor)
+            {
+                glutPostRedisplay();
+            }
+            else
+            {
+                p2.X -= 2;
+            }
         break;
 
         case 'C':
         case 'c':
             p2.Y++;
-            glutPostRedisplay();
+            d = euclideanDistance(p1.X, p1.Y, p2.X, p2.Y);
+            if (d <= radiusMajor)
+            {
+                glutPostRedisplay();
+            }
+            else
+            {
+                p2.Y -= 2;
+            }
         break;
 
         case 'B':
         case 'b':
             p2.Y--;
-            glutPostRedisplay();
+            d = euclideanDistance(p1.X, p1.Y, p2.X, p2.Y);
+            if (d <= radiusMajor)
+            {
+                glutPostRedisplay();
+            }
+            else
+            {
+                p2.Y += 2;
+            }
         break;
 
         default:
             cout << "Invalid key pressed: " << key << "\n";
         break;
     }
+
+    cout << d << "\n";
 }
 
 int main(int argc, char **argv)
