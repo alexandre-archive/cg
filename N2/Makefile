@@ -8,6 +8,8 @@ endif
 
 CFLAGS = -Wall
 
+all: exec1 exec2 exec3 exec4 exec6 exec7
+
 exec1:
 	$(info Compilando exercicio 1...)
 	g++ -o exec1$(EXT) exec1.cpp $< $(CFLAGS) $(GLFLAGS)
@@ -31,8 +33,6 @@ exec6:
 exec7:
 	$(info Compilando exercicio 7...)
 	g++ -o exec7$(EXT) exec7.cpp $< $(CFLAGS) $(GLFLAGS)
-
-all: exec1 exec2 exec3 exec4 exec6 exec7
 
 clean:
 	rm -f exec1$(EXT)
