@@ -51,6 +51,11 @@ void display()
         glVertex2f(p2.X, p2.Y);
     glEnd();
 
+    // Cubo
+    glColor3f(0.0, 1.0, 0.0);
+    glLineWidth(1.0f);
+    DrawRectangle(box.minX, box.maxX, box.minY, box.maxY);
+
     glutSwapBuffers();
 }
 
@@ -62,10 +67,17 @@ void initialize()
 
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
+    // Circulo maior.
     p1.X = 150;
     p1.Y = 150;
+    // Circulo menor.
     p2.X = 150;
     p2.Y = 150;
+
+    box.minX = p1.X + calculateX(315, radiusMajor);
+    box.maxX = p1.X + calculateX(225, radiusMajor);
+    box.minY = p1.Y + calculateY(225, radiusMajor);
+    box.maxY = p1.Y + calculateY(135, radiusMajor);
 }
 
 void zoom_in()
