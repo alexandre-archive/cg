@@ -239,8 +239,17 @@ Y = 124
 
 void motion(int x, int y)
 {
+    float oldX = p2.X,
+          oldY = p2.Y;
+
     p2.X = (x * 2) - width;
     p2.Y = (y * -2) + height;
+
+    if (!isInside())
+    {
+        p2.X = oldX;
+        p2.Y = oldY;
+    }
 
     glutPostRedisplay();
 
