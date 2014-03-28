@@ -213,9 +213,6 @@ void mouse(int button, int state, int x, int y)
 {
     // http://www.opengl.org/resources/libraries/glut/spec3/node50.html
 
-    p2.X = (x * 2) - width;
-    p2.Y = (y * -2) + height;
-
 /*
 (275 * 2) - 400 = 150
 
@@ -242,6 +239,11 @@ Y = 124
 
 void motion(int x, int y)
 {
+    p2.X = (x * 2) - width;
+    p2.Y = (y * -2) + height;
+
+    glutPostRedisplay();
+
     cout << "X = " << x << " " << "Y = " << y << "\n";
 }
 
