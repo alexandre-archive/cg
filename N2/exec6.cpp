@@ -209,6 +209,42 @@ void keyboard(unsigned char key, int mousePositionX, int mousePositionY)
     }
 }
 
+void mouse(int button, int state, int x, int y)
+{
+    // http://www.opengl.org/resources/libraries/glut/spec3/node50.html
+
+    p2.X = (x * 2) - width;
+    p2.Y = (y * -2) + height;
+
+/*
+(275 * 2) - 400 = 150
+
+(125 * -2) + 400 = 150
+
+
+p2.X = 150 
+p2.Y = 150
+
+X = 275 
+Y = 124
+
+(400 / 2) + (150 / 2) = 200 + 75 = 275
+
+(400 / 2) - (150 / 2) = 200 - 75 = 125
+
+*/
+
+    glutPostRedisplay();
+
+    cout << "p2.X = " << p2.X << " " << "p2.Y = " << p2.Y << "\n";
+    cout << "X = " << x << " " << "Y = " << y << "\n";
+}
+
+void motion(int x, int y)
+{
+    cout << "X = " << x << " " << "Y = " << y << "\n";
+}
+
 int main(int argc, char **argv)
 {
     glutInit(&argc, argv);
@@ -221,6 +257,8 @@ int main(int argc, char **argv)
 
     glutDisplayFunc(display);
     glutKeyboardFunc(keyboard);
+    glutMouseFunc(mouse);
+    glutMotionFunc(motion);
 
     initialize();
     glutMainLoop();
