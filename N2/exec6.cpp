@@ -28,6 +28,8 @@ float r = 0.0f,
       g = 1.0f,
       b = 0.0f;
 
+bool isMouseOK = false;
+
 void display()
 {
     glMatrixMode(GL_PROJECTION);
@@ -211,30 +213,7 @@ void keyboard(unsigned char key, int mousePositionX, int mousePositionY)
 
 void mouse(int button, int state, int x, int y)
 {
-    // http://www.opengl.org/resources/libraries/glut/spec3/node50.html
-
-/*
-(275 * 2) - 400 = 150
-
-(125 * -2) + 400 = 150
-
-
-p2.X = 150 
-p2.Y = 150
-
-X = 275 
-Y = 124
-
-(400 / 2) + (150 / 2) = 200 + 75 = 275
-
-(400 / 2) - (150 / 2) = 200 - 75 = 125
-
-*/
-
-    glutPostRedisplay();
-
-    cout << "p2.X = " << p2.X << " " << "p2.Y = " << p2.Y << "\n";
-    cout << "X = " << x << " " << "Y = " << y << "\n";
+    isMouseOK = button == GLUT_LEFT_BUTTON && state == GLUT_DOWN;
 }
 
 void motion(int x, int y)
