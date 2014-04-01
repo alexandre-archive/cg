@@ -5,6 +5,8 @@
 #include "base.h"
 #include <iostream>
 
+#include <stdio.h>
+
 using namespace std;
 
 GLint width     = 400,
@@ -20,47 +22,47 @@ GLfloat angle  = 100,
 
 Point p1, p2, p3, p4, pSelected;
 
-int selected = 1;
-float qtdPointsSpline = 10.0f;
+int selected        = 1,
+    qtdPointsSpline = 10;
 
 void mouse(int x, int y)
 {
-        switch (selected)
-            {
-                case 1:
-                    p1.X = (x * 2) - width;
-                    pSelected.X = p1.X;
-                    p1.Y = (y * -2) + height;
-                    pSelected.Y = p1.Y;
-                break;
+    switch (selected)
+        {
+            case 1:
+                p1.X = (x * 2) - width;
+                pSelected.X = p1.X;
+                p1.Y = (y * -2) + height;
+                pSelected.Y = p1.Y;
+            break;
 
-                case 2:
-                    p2.X = (x * 2) - width;
-                    pSelected.X = p2.X;
-                    p2.Y = (y * -2) + height;
-                    pSelected.Y = p2.Y;
-                break;
+            case 2:
+                p2.X = (x * 2) - width;
+                pSelected.X = p2.X;
+                p2.Y = (y * -2) + height;
+                pSelected.Y = p2.Y;
+            break;
 
-                case 3:
-                    p3.X = (x * 2) - width;
-                    pSelected.X = p3.X;
-                    p3.Y = (y * -2) + height;
-                    pSelected.Y = p3.Y;
-                break;
+            case 3:
+                p3.X = (x * 2) - width;
+                pSelected.X = p3.X;
+                p3.Y = (y * -2) + height;
+                pSelected.Y = p3.Y;
+            break;
 
-                case 4:
-                    p4.X = (x * 2) - width;
-                    pSelected.X = p4.X;
-                    p4.Y = (y * -2) + height;
-                    pSelected.Y = p4.Y;
-                break;
+            case 4:
+                p4.X = (x * 2) - width;
+                pSelected.X = p4.X;
+                p4.Y = (y * -2) + height;
+                pSelected.Y = p4.Y;
+            break;
 
-                default:
-                    cout << "Ivalid point: " << selected << "\n";
-                break;
-            }
+            default:
+                cout << "Invalid point: " << selected << "\n";
+            break;
+        }
 
-        glutPostRedisplay();
+    glutPostRedisplay();
 }
 
 Point SplineIterator(Point a, Point b, float t)
@@ -73,36 +75,34 @@ Point SplineIterator(Point a, Point b, float t)
 
 void DrawSpline()
 {
-    float incT = 1/ qtdPointsSpline;
-    float t = 0;
-    Point p1p2,p2p3,p3p4, p1p2p3, p2p3p4, p1p2p3p4, pontoInicial;
+    float incT = 1.0f / qtdPointsSpline;
+    float t;
+    Point p1p2, p2p3, p3p4, p1p2p3, p2p3p4, p1p2p3p4, p0;
 
-    // Define a Cor Amarela
-    glColor3f(255.0, 255.0, 0.0);
-    // Define expessura da linha
+    glColor3f(1.0, 1.0, 0.0);
     glLineWidth(4.0f);
 
-    // Aqui tem um problema, o T deve ser <= 1, mas nao entrava quando == 1, por isso coloquei < 1,001
-    for(t=0; t < 1.0001; t = t + incT)
+    // 1.00000 = Floating-Point Arithmetic Correction.
+    for(t = 0; t <= 1.000001; t += incT)
     {
-        p1p2 = SplineIterator(p1,p2,t);
-        p2p3 = SplineIterator(p2,p3,t);
-        p3p4= SplineIterator(p3,p4,t);
-        p1p2p3 = SplineIterator(p1p2,p2p3,t);
-        p2p3p4 = SplineIterator(p2p3,p3p4,t);
-        p1p2p3p4 = SplineIterator(p1p2p3,p2p3p4,t);
+        p1p2     = SplineIterator(p1, p2, t);
+        p2p3     = SplineIterator(p2, p3, t);
+        p3p4     = SplineIterator(p3, p4, t);
+        p1p2p3   = SplineIterator(p1p2, p2p3, t);
+        p2p3p4   = SplineIterator(p2p3, p3p4, t);
+        p1p2p3p4 = SplineIterator(p1p2p3, p2p3p4, t);
 
-        //A primeira vez nao desenha, pois preciso definir o segundo ponto ainda
+        // A primeira vez nao desenha, pois preciso definir o segundo ponto ainda.
         if(t != 0)
         {
             glBegin(GL_LINES);
-                glVertex2f(pontoInicial.X, pontoInicial.Y);
+                glVertex2f(p0.X, p0.Y);
                 glVertex2f(p1p2p3p4.X, p1p2p3p4.Y);
             glEnd();
         }
 
-        pontoInicial.X = p1p2p3p4.X;
-        pontoInicial.Y = p1p2p3p4.Y;
+        p0.X = p1p2p3p4.X;
+        p0.Y = p1p2p3p4.Y;
     }
 }
 
@@ -121,13 +121,10 @@ void display()
     // Eixo X e Y.
     DrawXYAxes();
 
-    // Define a cor Ciano
-    glColor3f(0.0, 255.0, 255.0); 
-
-    // Expessura da Linha
+    glColor3f(0.0, 1.0, 1.0);
     glLineWidth(4.0f);
 
-    //Desenha as Linhas do poliedro
+    // Desenha as Linhas do poliedro.
     glBegin(GL_LINE_STRIP);
         glVertex2f(p1.X, p1.Y);
         glVertex2f(p2.X, p2.Y);
@@ -135,15 +132,12 @@ void display()
         glVertex2f(p4.X, p4.Y);
     glEnd();
 
-    //Rotina para desenhar Spline
     DrawSpline();
 
-    //Define a Cor Vermelha
-    glColor3f(255.0, 0.0, 0.0); 
-    //Define expessura do ponto
+    glColor3f(1.0, 0.0, 0.0);
     glPointSize(7.0F);
 
-    //Desenha o ponto na extremidade da Linha
+    // Desenha o ponto na extremidade da linha.
      glBegin(GL_POINTS);
         glVertex2f(pSelected.X, pSelected.Y);
      glEnd();
@@ -216,14 +210,14 @@ void keyboard(unsigned char key, int mousePositionX, int mousePositionY)
         case 'q':
             if(qtdPointsSpline > 1)
             {
-                qtdPointsSpline = qtdPointsSpline - 1;
+                qtdPointsSpline -= 1;
                 glutPostRedisplay();
             }
         break; 
 
         case 'W':
         case 'w':
-            qtdPointsSpline = qtdPointsSpline + 1;
+            qtdPointsSpline += 1;
             glutPostRedisplay();
         break;
 
@@ -238,21 +232,12 @@ int main(int argc, char **argv)
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
 
-    //Posicao da Window
     glutInitWindowPosition(300, 250);
-
-    //Tamananho da Window
     glutInitWindowSize(width, height);
-
-    //Cria uma nova Window
     glutCreateWindow("N2 - Exercicio 5");
-    //Display do desenho Inicial
+
     glutDisplayFunc(display);
-
-    //Faz Tratamento das teclas e redesenha
     glutKeyboardFunc(keyboard);
-
-    //Faz Tratamento do mouse
     glutMotionFunc(mouse);
 
     initialize();
