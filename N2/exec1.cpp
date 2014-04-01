@@ -31,7 +31,8 @@ void display()
     DrawXYAxes();
 
     // Circulo pontilhado.
-    glColor3f(0.0, 0.0, 0.0);
+    glColor3f(0.0f, 0.3f, 1.0f);
+    glPointSize(1.5f);
     DrawCircle(0, 0, 100, 72, GL_POINTS);
 
     glutSwapBuffers();
@@ -43,7 +44,7 @@ void initialize()
     glDisableClientState(GL_TEXTURE_COORD_ARRAY);
     glDisable(GL_LIGHTING);
 
-    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+    glClearColor(0.8f, 0.8f, 0.8f, 1.0f);
 }
 
 void keyboard(unsigned char key, int mousePositionX, int mousePositionY)
