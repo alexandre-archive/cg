@@ -213,16 +213,29 @@ void keyboard(unsigned char key, int mousePositionX, int mousePositionY)
 
 void mouse(int button, int state, int x, int y)
 {
-    isMouseOK = button == GLUT_LEFT_BUTTON && state == GLUT_DOWN;
+    isMouseOK = false;
 
-    // Economiza processamento. Não era o botão certo.
-    if (!isMouseOK) return;
+    // Release mouse button.
+    if (button == 0 && state == GLUT_UP)
+    {
+        p2.X = 150;
+        p2.Y = 150;
 
-    float dx = (x * 2) - width,
-          dy = (y * -2) + height;
+        r = 0.0f;
+        g = 1.0f;
+        b = 0.0f;
 
-    double d = euclideanDistance(p2.X, p2.Y, dx, dy);
-    isMouseOK = d <= radiusMinor * radiusMinor;
+        glutPostRedisplay();
+    }
+    else if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
+    {
+        float dx = (x * 2) - width,
+              dy = (y * -2) + height;
+
+        double d = euclideanDistance(p2.X, p2.Y, dx, dy);
+
+        isMouseOK = d <= radiusMinor * radiusMinor;
+    }
 }
 
 void motion(int x, int y)

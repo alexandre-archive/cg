@@ -51,13 +51,13 @@ void display()
     // Primitivas.
     glBegin(GL_CONSTANTS[GL_CONST]);
         glColor3f(0.0f, 0.0f, 1.0f);
-        glVertex2f(100.0f, -100.0f);
+        glVertex2f(200.0f, -200.0f);
         glColor3f(1.0f, 0.0f, 0.0f);
-        glVertex2f(100.0f,  100.0f);
+        glVertex2f(200.0f,  200.0f);
         glColor3f(0.0f, 1.0f, 0.0f);
-        glVertex2f(-100.0f,  100.0f);
+        glVertex2f(-200.0f,  200.0f);
         glColor3f(1.0f, 0.078f, 0.576f);
-        glVertex2f(-100.0f, -100.0f);
+        glVertex2f(-200.0f, -200.0f);
     glEnd();
 
     glutSwapBuffers();

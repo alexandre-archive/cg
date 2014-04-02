@@ -31,18 +31,18 @@ void display()
     DrawXYAxes();
 
     // 3 circulos
-    glLineWidth(1.5f);
+    glLineWidth(1.2f);
     glColor3f(0.0, 0.0, 0.0);
     // Direita
-    DrawCircle(100, 100, 100, 100, GL_LINE_LOOP);
+    DrawCircle(100, 100, 100, 200, GL_LINE_LOOP);
     // Esquerda
-    DrawCircle(-100, 100, 100, 100, GL_LINE_LOOP);
+    DrawCircle(-100, 100, 100, 200, GL_LINE_LOOP);
     // Inferior
-    DrawCircle(0, -100, 100, 100, GL_LINE_LOOP);
+    DrawCircle(0, -100, 100, 200, GL_LINE_LOOP);
 
     // Triangulo
     glLineWidth(1.0f);
-    glColor3f(0.0f, 0.6f, 1.0f);
+    glColor3f(0.0f, 0.9f, 1.0f);
 
     Point p1, p2, p3;
     // Ponto esquerdo.

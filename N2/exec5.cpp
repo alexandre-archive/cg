@@ -25,8 +25,12 @@ Point p1, p2, p3, p4, pSelected;
 int selected        = 1,
     qtdPointsSpline = 10;
 
+bool isMouseOK = false;
+
 void mouse(int x, int y)
 {
+    if (!isMouseOK) return;
+
     switch (selected)
         {
             case 1:
@@ -227,6 +231,11 @@ void keyboard(unsigned char key, int mousePositionX, int mousePositionY)
     }
 }
 
+void mouse(int button, int state, int x, int y)
+{
+    isMouseOK = button == GLUT_LEFT_BUTTON && state == GLUT_DOWN;
+}
+
 int main(int argc, char **argv)
 {
     glutInit(&argc, argv);
@@ -239,6 +248,7 @@ int main(int argc, char **argv)
     glutDisplayFunc(display);
     glutKeyboardFunc(keyboard);
     glutMotionFunc(mouse);
+    glutMouseFunc(mouse);
 
     initialize();
 
