@@ -24,6 +24,7 @@ GLfloat radiusMajor = 120.0f,
 
 int ZOOM = 100;
 
+// BBox color.
 float r = 0.0f,
       g = 1.0f,
       b = 0.0f;
@@ -67,27 +68,38 @@ void display()
     glutSwapBuffers();
 }
 
-void changeBBoxColor(float d)
+bool isInside()
 {
-    if (d > (radiusMajor * radiusMajor) - 5)
+    if (p2.X < box.minX &&
+        p2.X > box.maxX &&
+        p2.Y > box.minY &&
+        p2.Y < box.maxY)
+    {
+        r = 0.0f;
+        g = 1.0f;
+        b = 0.0f;
+
+        return true;
+    }
+
+    double d = euclideanDistance(p1.X, p1.Y, p2.X, p2.Y);
+    bool outRadius = d <= radiusMajor * radiusMajor;
+
+    // Fora da BBox e Dentro do raio.
+    if (outRadius)
+    {
+        r = 1.0f;
+        g = 1.0f;
+        b = 0.0f;
+    }
+    else
     {
         r = 1.0f;
         g = 0.0f;
         b = 0.0f;
     }
-    else
-    {
-        r = 0.0f;
-        g = 1.0f;
-        b = 0.0f;
-    }
-}
 
-bool isInside()
-{
-    double d = euclideanDistance(p1.X, p1.Y, p2.X, p2.Y);
-    changeBBoxColor(d);
-    return d <= radiusMajor * radiusMajor;
+    return outRadius;
 }
 
 void initialize()
@@ -216,7 +228,7 @@ void mouse(int button, int state, int x, int y)
     isMouseOK = false;
 
     // Release mouse button.
-    if (button == 0 && state == GLUT_UP)
+    if (/*button == 0 && */state == GLUT_UP)
     {
         p2.X = 150;
         p2.Y = 150;
@@ -229,12 +241,7 @@ void mouse(int button, int state, int x, int y)
     }
     else if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
     {
-        float dx = (x * 2) - width,
-              dy = (y * -2) + height;
-
-        double d = euclideanDistance(p2.X, p2.Y, dx, dy);
-
-        isMouseOK = d <= radiusMinor * radiusMinor;
+        isMouseOK = true;
     }
 }
 
