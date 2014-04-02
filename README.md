@@ -26,15 +26,15 @@ N2 examples produce 2D Graphics. See above.
 
 #### exec5.cpp
 
-[![05](http://img.youtube.com/vi/O7bf7bMmpK4/0.jpg)](https://www.youtube.com/embed/O7bf7bMmpK4)
+[![05](http://img.youtube.com/vi/JKOmhiE_zfo/0.jpg)](https://www.youtube.com/embed/JKOmhiE_zfo)
 
 #### exec6.cpp
 
-[![06](http://img.youtube.com/vi/yaxHi7jWg7k/0.jpg)](https://www.youtube.com/embed/yaxHi7jWg7k)
+[![06](http://img.youtube.com/vi/1Kkum-4Qxak/0.jpg)](https://www.youtube.com/embed/1Kkum-4Qxak)
 
 #### exec7.cpp
 
-[![07](http://img.youtube.com/vi/BwvsaqVkhAI/0.jpg)](https://www.youtube.com/embed/BwvsaqVkhAI)
+[![07](http://img.youtube.com/vi/mFRaGK0m-GI/0.jpg)](https://www.youtube.com/embed/mFRaGK0m-GI)
 
 
   [1]: http://gcg.inf.furb.br/cg/N2_files/imagens/CG_N2-01.png
