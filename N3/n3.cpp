@@ -9,14 +9,21 @@
 #define KEY_TAB 9
 #define KEY_ESC 27
 
+GLint width  = 400,
+      height = 400;
+
 GLfloat ortho2D_minX = -400.0f,
         ortho2D_maxX =  400.0f,
         ortho2D_minY = -400.0f,
         ortho2D_maxY =  400.0f;
 
-bool selection = false;
+bool selectionMode = false;
 
-void resize(int width, int height) 
+PWorld world;
+int currentObj = -1;
+bool isMouseDown = false;
+
+void resize(int width, int height)
 {
 
 }
@@ -24,8 +31,8 @@ void resize(int width, int height)
 void DrawText(int x, int y, char *s)
 {
     int len, i;
-    glRasterPos2f(x, y);
     glColor3f(1.0f, 0.0f, 0.0f);
+    glRasterPos2f(x, y);
     len = (int) strlen(s);
 
     for (i = 0; i < len; i++)
@@ -34,9 +41,25 @@ void DrawText(int x, int y, char *s)
     }
 }
 
+/**
+    Converte o espaço X do mouse, para o espaço X do Ortho.
+**/
+int convertXSpace(int x)
+{
+    return (x * 2) - width;
+}
+
+/**
+    Converte o espaço Y do mouse, para o espaço Y do Ortho.
+**/
+int convertYSpace(int y)
+{
+    return (y * -2) + height;
+}
+
 void drawMode()
 {
-    DrawText(ortho2D_minX + 4, ortho2D_minY + 4, (char*)(selection ? "Selecao" : "Edicao"));
+    DrawText(ortho2D_minX + 4, ortho2D_minY + 4, (char*)(selectionMode ? "Selecao (Tab)" : "Edicao (Tab)"));
 }
 
 void display()
@@ -52,6 +75,8 @@ void display()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     drawMode();
+    world->Draw();
+    //DrawXYAxes();
 
     glutSwapBuffers();
 }
@@ -64,7 +89,7 @@ void keyPress(unsigned char key, int x, int y)
             exit(0);
         break;
         case KEY_TAB:
-            selection = !selection;
+            selectionMode = !selectionMode;
             glutPostRedisplay();
         break;
         default:
@@ -80,22 +105,75 @@ void specialKeyPress(int key, int x, int y)
 
 void mouseMove(int x, int y)
 {
+    //cout << "Current Obj = " << currentObj << "\n";
+    //cout << "Mouse is Down = " << isMouseDown << "\n";
 
+    if (isMouseDown && currentObj != -1)
+    {
+        //cout << "x = " << x << " y = " << y << "\n";
+
+        Point& pe = world->Objects[currentObj]->Points.back();
+        pe.x = convertXSpace(x);
+        pe.y = convertYSpace(y);
+
+        glutPostRedisplay();
+    }
 }
 
 void mouseEvent(int button, int state, int x, int y)
 {
     // button  GLUT_LEFT_BUTTON, GLUT_MIDDLE_BUTTON, or GLUT_RIGHT_BUTTON
     // state GLUT_UP or GLUT_DOWN
+    //cout << "x = " << x << " y = " << y << "\n";
 
-    if (state == GLUT_DOWN)
+    if (selectionMode)
     {
 
     }
-    else if (state == GLUT_UP)
+    else
     {
+        if (button == GLUT_LEFT_BUTTON)
+        {
+            if (state == GLUT_DOWN)
+            {
+                isMouseDown = true;
 
+                // É um novo
+                if (currentObj == -1)
+                {
+                    world->Objects.push_back(new GraphicObject());
+                    currentObj = world->Objects.size() - 1;
+                }
+
+                Point ps;
+                ps.x = convertXSpace(x);
+                ps.y = convertYSpace(y);
+
+                world->Objects[currentObj]->Points.push_back(ps);
+                world->Objects[currentObj]->Points.push_back(ps);
+            }
+            else if (state == GLUT_UP)
+            {
+                isMouseDown = false;
+
+                if (currentObj != -1)
+                {
+                    Point& pe = world->Objects[currentObj]->Points.back();
+                    pe.x = convertXSpace(x);
+                    pe.y = convertYSpace(y);
+                }
+            }
+
+            //cout << "Current Obj = " << currentObj << "\n";
+            //cout << "Mouse is Down = " << isMouseDown << "\n";
+        }
+        else
+        {
+            currentObj = -1;
+        }
     }
+
+    glutPostRedisplay();
 }
 
 void createScene()
@@ -117,15 +195,30 @@ void init(void)
     glDisableClientState(GL_TEXTURE_COORD_ARRAY);
     glDisable(GL_LIGHTING);
 
-    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+    glClearColor(0.8f, 0.8f, 1.0f, 1.0f);
+
+    world = new World();
+/*
+    // Draw line test.
+    auto o = new GraphicObject();
+    Point p1;
+    p1.x = -200;
+    p1.y = 0;
+    Point p2;
+    p2.x = 200;
+    p2.y = 0;
+    o->Points.push_back(p1);
+    o->Points.push_back(p2);
+    world->Objects.push_back(o);
+*/
 }
 
-int main(int argc, const char * argv[]) 
+int main(int argc, const char * argv[])
 {
     glutInit(&argc, (char **)argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
     glutInitWindowPosition(300, 250);
-    glutInitWindowSize(400, 400);
+    glutInitWindowSize(height, width);
 
     glutCreateWindow("N3");
 
@@ -133,7 +226,7 @@ int main(int argc, const char * argv[])
     glutDisplayFunc(display);
     glutKeyboardFunc(keyPress);
     glutSpecialFunc(specialKeyPress);
-    glutPassiveMotionFunc(mouseMove);
+    glutMotionFunc(mouseMove);
     glutMouseFunc(mouseEvent);
 
     init();

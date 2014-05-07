@@ -30,6 +30,28 @@ struct Point4D : Point3D
     float w = 1;
 };
 
+struct Color
+{
+    float r, g, b, a;
+};
+
+typedef struct Point Point;
+
+inline void DrawXYAxes()
+{
+    glLineWidth(1.0f);
+    glBegin(GL_LINES);
+        // Eixo X.
+        glColor3f(1.0f, 0.0f, 0.0f);
+        glVertex2f(-200.0f, 0.0f);
+        glVertex2f(200.0f, 0.0f);
+        // Eixo Y.
+        glColor3f(0.0f, 1.0f, 0.0f);
+        glVertex2f(0.0f, -200.0f);
+        glVertex2f(0.0f, 200.0f);
+    glEnd();
+}
+
 class BBox
 {
     public:
@@ -41,13 +63,15 @@ class BBox
 class GraphicObject
 {
     public:
-        int Background;
+        Color Background;
         BBox Bbox;
         vector<GraphicObject> Objects;
         vector<Point> Points;
         int Primitive;
         void Draw();
 };
+
+typedef GraphicObject* PGraf;
 
 class Camera
 {
@@ -59,16 +83,40 @@ class Camera
 class World
 {
     public:
-        int Background;
-        vector<GraphicObject> Objects;
+        Color Background;
+        vector<PGraf> Objects;
         GLfloat ortho2D_minX, ortho2D_maxX, ortho2D_minY, ortho2D_maxY;
         void Zoom();
         void Pan();
+        void Draw();
 };
 
-void GraphicObject::Draw() 
+typedef World* PWorld;
+
+void GraphicObject::Draw()
 {
-    cout << "Draw\n";
+    glLineWidth(1.0f);
+
+    glColor3f(0.0f, 0.0f, 0.0f);
+    glBegin(GL_LINE_LOOP);
+
+    for (size_t i = 0; i < Points.size(); i++)
+    {
+        glVertex2f(Points[i].x, Points[i].y);
+    }
+
+    glEnd();
+}
+
+void World::Draw()
+{
+    if (Objects.size() > 0)
+    {
+        for (size_t i = 0; i < Objects.size(); i++)
+        {
+            Objects[i]->Draw();
+        }
+    }
 }
 
 Camera::Camera()
