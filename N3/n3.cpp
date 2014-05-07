@@ -98,7 +98,12 @@ void keyPress(unsigned char key, int x, int y)
             // Limpa a tela se for edição.
             if (selectionMode)
             {
-
+                if (currentObj != -1)
+                {
+                    world->Objects.erase(world->Objects.begin() + currentObj);
+                    currentObj = -1;
+                    glutPostRedisplay();
+                }
             }
             else
             {
