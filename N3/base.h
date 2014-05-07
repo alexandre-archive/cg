@@ -52,6 +52,34 @@ inline void DrawXYAxes()
     glEnd();
 }
 
+inline void DrawRectangle(float minX, float maxX, float minY, float maxY)
+{
+    glBegin(GL_LINE_LOOP);
+        // Linha inferior.
+        glVertex2f(minX, minY);
+        // Linha lateral esquerda.
+        glVertex2f(minX, maxY);
+        // Linha superior.
+        glVertex2f(maxX, maxY);
+        // Linha lateral direita.
+        glVertex2f(maxX, minY);
+    glEnd();
+}
+
+inline void DrawRectangle(Point p1, Point p2, Point p3, Point p4)
+{
+    glBegin(GL_LINE_LOOP);
+        // Linha inferior.
+        glVertex2f(p1.x, p1.y);
+        // Linha lateral esquerda.
+        glVertex2f(p2.x, p2.y);
+        // Linha superior.
+        glVertex2f(p3.x, p3.y);
+        // Linha lateral direita.
+        glVertex2f(p4.x, p4.y);
+    glEnd();
+}
+
 class BBox
 {
     public:
@@ -62,6 +90,9 @@ class BBox
 
 class GraphicObject
 {
+    private:
+        bool selected;
+        int  primitive;
     public:
         GraphicObject();
         ~GraphicObject();
@@ -69,9 +100,12 @@ class GraphicObject
         BBox Bbox;
         vector<GraphicObject> Objects;
         vector<Point> Points;
-        int Primitive;
         void Draw();
+        void DrawBBox();
         void ChangePrimitive();
+        bool IsMouseInside(int x, int y);
+        void CalculateBBox();
+        void SetSelected(bool selected) { this->selected = selected; };
 };
 
 typedef GraphicObject* PGraf;
@@ -98,7 +132,8 @@ typedef World* PWorld;
 
 GraphicObject::GraphicObject()
 {
-    Primitive = GL_LINE_LOOP;
+    primitive = GL_LINE_LOOP;
+    selected = false;
 }
 
 GraphicObject::~GraphicObject()
@@ -108,13 +143,13 @@ GraphicObject::~GraphicObject()
 
 void GraphicObject::ChangePrimitive()
 {
-    if (Primitive == GL_LINE_LOOP)
+    if (primitive == GL_LINE_LOOP)
     {
-        Primitive = GL_LINE_STRIP;
+        primitive = GL_LINE_STRIP;
     }
     else
     {
-        Primitive = GL_LINE_LOOP;
+        primitive = GL_LINE_LOOP;
     }
 }
 
@@ -123,7 +158,7 @@ void GraphicObject::Draw()
     glLineWidth(1.0f);
 
     glColor3f(0.0f, 0.0f, 0.0f);
-    glBegin(Primitive);
+    glBegin(primitive);
 
     for (size_t i = 0; i < Points.size(); i++)
     {
@@ -131,6 +166,54 @@ void GraphicObject::Draw()
     }
 
     glEnd();
+
+    if (selected) 
+    {
+        DrawBBox();
+    }
+}
+
+void GraphicObject::DrawBBox()
+{
+    glColor3f(1.0f, 0.0f, 0.0f);
+    glLineWidth(1.0f);
+    DrawRectangle(Bbox.minX, Bbox.maxX, Bbox.minY, Bbox.maxY);
+}
+
+bool GraphicObject::IsMouseInside(int x, int )
+{
+    return false;
+}
+
+void GraphicObject::CalculateBBox()
+{
+    Bbox.minX = Points[0].x;
+    Bbox.maxX = Points[0].x;
+    Bbox.minY = Points[0].y;
+    Bbox.maxY = Points[0].y;
+
+    for (size_t i = 1; i < Points.size(); i++)
+    {
+        if (Points[i].x < Bbox.minX)
+        {
+            Bbox.minX = Points[i].x;
+        }
+
+        if (Points[i].y < Bbox.minY)
+        {
+            Bbox.minY = Points[i].y;
+        }
+
+        if (Points[i].x > Bbox.maxX)
+        {
+            Bbox.maxX = Points[i].x;
+        }
+
+        if (Points[i].y > Bbox.maxY)
+        {
+            Bbox.maxY = Points[i].y;
+        }
+    }
 }
 
 void World::Draw()

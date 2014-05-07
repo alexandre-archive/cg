@@ -114,6 +114,34 @@ void keyPress(unsigned char key, int x, int y)
                 glutPostRedisplay();
             }
         break;
+        case 'P':
+        case 'p':
+            // Seleciona um poligono.
+            if (selectionMode && world->Objects.size() > 0)
+            {
+                if (currentObj == -1)
+                {
+                    currentObj = 0;
+                }
+                else
+                {
+                    currentObj += 1;
+
+                    if (currentObj >= world->Objects.size())
+                    {
+                        currentObj = 0;
+                    }
+                }
+
+                for (size_t i = 0; i < world->Objects.size(); i++)
+                {
+                    world->Objects[i]->SetSelected(false);
+                }
+
+                world->Objects[currentObj]->SetSelected(true);
+                glutPostRedisplay();
+            }
+        break;
         default:
             cout << key << "\n";
         break;
@@ -173,6 +201,8 @@ void mouseEvent(int button, int state, int x, int y)
 
                 world->Objects[currentObj]->Points.push_back(ps);
                 world->Objects[currentObj]->Points.push_back(ps);
+
+                world->Objects[currentObj]->CalculateBBox();
             }
             else if (state == GLUT_UP)
             {
@@ -183,6 +213,7 @@ void mouseEvent(int button, int state, int x, int y)
                     Point& pe = world->Objects[currentObj]->Points.back();
                     pe.x = convertXSpace(x);
                     pe.y = convertYSpace(y);
+                    world->Objects[currentObj]->CalculateBBox();
                 }
             }
 
