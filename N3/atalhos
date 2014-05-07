@@ -1,6 +1,7 @@
-ESC   = Fecha a tela
-DEL   = Se edição limpa a tela
-        Se seleção ...
-SPACE = Muda a primitiva do poligono atual. (LOOP ou STRIP)
-TAB   = Altera de seleção para edição
-P     = Se seleção seleciona um poligono ou altera entre o poligono selecionado.
+ESC     = Fecha a tela
+DEL     = Se edição limpa a tela
+          Se seleção e um poligono selecionado, remove o poligono
+SPACE   = Muda a primitiva do poligono atual. (LOOP ou STRIP)
+TAB     = Altera de seleção para edição
+P       = Se seleção seleciona um poligono ou altera entre o poligono selecionado.
+R, G, B = Alterar as cores do poligono selecionado ou atual em desenho.

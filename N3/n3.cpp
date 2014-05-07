@@ -1,10 +1,12 @@
-#include "base.h"
-
-#ifdef WIN32
-    #include <windows.h>
+#ifndef BASE_H
+    #define BASE_H
+    #include "base.h"
 #endif
 
 #include <string.h>
+
+#include "universe.cpp"
+#include "graphicobject.cpp"
 
 #define KEY_TAB 9
 #define KEY_ESC 27
@@ -21,7 +23,7 @@ GLfloat ortho2D_minX = -400.0f,
 
 bool selectionMode = false;
 
-PWorld world;
+PUniverse universe;
 int currentObj = -1;
 bool isMouseDown = false;
 
@@ -77,7 +79,7 @@ void display()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     drawMode();
-    world->Draw();
+    universe->Draw();
 
     glutSwapBuffers();
 }
@@ -91,6 +93,13 @@ void keyPress(unsigned char key, int x, int y)
         break;
         case KEY_TAB:
             selectionMode = !selectionMode;
+
+            // Remove a seleção de todos. Caso contrário ficara com a BBox.
+            for (size_t i = 0; i < universe->Objects.size(); i++)
+            {
+                universe->Objects[i]->SetSelected(false);
+            }
+
             glutPostRedisplay();
         break;
         case KEY_DEL:
@@ -100,7 +109,7 @@ void keyPress(unsigned char key, int x, int y)
             {
                 if (currentObj != -1)
                 {
-                    world->Objects.erase(world->Objects.begin() + currentObj);
+                    universe->Objects.erase(universe->Objects.begin() + currentObj);
                     currentObj = -1;
                     glutPostRedisplay();
                 }
@@ -108,21 +117,21 @@ void keyPress(unsigned char key, int x, int y)
             else
             {
                 currentObj = -1;
-                world->Objects.clear();
+                universe->Objects.clear();
                 glutPostRedisplay();
             }
         break;
         case KEY_SPACE:
             if (currentObj != -1)
             {
-                world->Objects[currentObj]->ChangePrimitive();
+                universe->Objects[currentObj]->ChangePrimitive();
                 glutPostRedisplay();
             }
         break;
         case 'P':
         case 'p':
             // Seleciona um poligono.
-            if (selectionMode && world->Objects.size() > 0)
+            if (selectionMode && universe->Objects.size() > 0)
             {
                 if (currentObj == -1)
                 {
@@ -132,18 +141,42 @@ void keyPress(unsigned char key, int x, int y)
                 {
                     currentObj += 1;
 
-                    if (currentObj >= world->Objects.size())
+                    if (currentObj >= universe->Objects.size())
                     {
                         currentObj = 0;
                     }
                 }
 
-                for (size_t i = 0; i < world->Objects.size(); i++)
+                for (size_t i = 0; i < universe->Objects.size(); i++)
                 {
-                    world->Objects[i]->SetSelected(false);
+                    universe->Objects[i]->SetSelected(false);
                 }
 
-                world->Objects[currentObj]->SetSelected(true);
+                universe->Objects[currentObj]->SetSelected(true);
+                glutPostRedisplay();
+            }
+        break;
+        case 'R':
+        case 'r':
+            if (currentObj != -1)
+            {
+                universe->Objects[currentObj]->ChangeRColor();
+                glutPostRedisplay();
+            }
+        break;
+        case 'G':
+        case 'g':
+            if (currentObj != -1)
+            {
+                universe->Objects[currentObj]->ChangeGColor();
+                glutPostRedisplay();
+            }
+        break;
+        case 'B':
+        case 'b':
+            if (currentObj != -1)
+            {
+                universe->Objects[currentObj]->ChangeBColor();
                 glutPostRedisplay();
             }
         break;
@@ -167,7 +200,7 @@ void mouseMove(int x, int y)
     {
         //cout << "x = " << x << " y = " << y << "\n";
 
-        Point& pe = world->Objects[currentObj]->Points.back();
+        Point& pe = universe->Objects[currentObj]->Points.back();
         pe.x = convertXSpace(x);
         pe.y = convertYSpace(y);
 
@@ -196,18 +229,18 @@ void mouseEvent(int button, int state, int x, int y)
                 // É um novo
                 if (currentObj == -1)
                 {
-                    world->Objects.push_back(new GraphicObject());
-                    currentObj = world->Objects.size() - 1;
+                    universe->Objects.push_back(new GraphicObject());
+                    currentObj = universe->Objects.size() - 1;
                 }
 
                 Point ps;
                 ps.x = convertXSpace(x);
                 ps.y = convertYSpace(y);
 
-                world->Objects[currentObj]->Points.push_back(ps);
-                world->Objects[currentObj]->Points.push_back(ps);
+                universe->Objects[currentObj]->Points.push_back(ps);
+                universe->Objects[currentObj]->Points.push_back(ps);
 
-                world->Objects[currentObj]->CalculateBBox();
+                universe->Objects[currentObj]->CalculateBBox();
             }
             else if (state == GLUT_UP)
             {
@@ -215,10 +248,10 @@ void mouseEvent(int button, int state, int x, int y)
 
                 if (currentObj != -1)
                 {
-                    Point& pe = world->Objects[currentObj]->Points.back();
+                    Point& pe = universe->Objects[currentObj]->Points.back();
                     pe.x = convertXSpace(x);
                     pe.y = convertYSpace(y);
-                    world->Objects[currentObj]->CalculateBBox();
+                    universe->Objects[currentObj]->CalculateBBox();
                 }
             }
 
@@ -255,7 +288,7 @@ void init(void)
 
     glClearColor(0.8f, 0.8f, 1.0f, 1.0f);
 
-    world = new World();
+    universe = new Universe();
 /*
     // Draw line test.
     auto o = new GraphicObject();
@@ -267,7 +300,7 @@ void init(void)
     p2.y = 0;
     o->Points.push_back(p1);
     o->Points.push_back(p2);
-    world->Objects.push_back(o);
+    universe->Objects.push_back(o);
 */
 }
 
