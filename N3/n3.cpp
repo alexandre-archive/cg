@@ -8,6 +8,7 @@
 
 #define KEY_TAB 9
 #define KEY_ESC 27
+#define KEY_DEL 127
 
 GLint width  = 400,
       height = 400;
@@ -91,6 +92,15 @@ void keyPress(unsigned char key, int x, int y)
         case KEY_TAB:
             selectionMode = !selectionMode;
             glutPostRedisplay();
+        break;
+        case KEY_DEL:
+            // Limpa a tela se for edição.
+            if (!selectionMode)
+            {
+                currentObj = -1;
+                world->Objects.clear();
+                glutPostRedisplay();
+            }
         break;
         default:
             cout << key << "\n";
