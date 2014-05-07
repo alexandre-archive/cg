@@ -63,12 +63,15 @@ class BBox
 class GraphicObject
 {
     public:
+        GraphicObject();
+        ~GraphicObject();
         Color Background;
         BBox Bbox;
         vector<GraphicObject> Objects;
         vector<Point> Points;
         int Primitive;
         void Draw();
+        void ChangePrimitive();
 };
 
 typedef GraphicObject* PGraf;
@@ -93,12 +96,34 @@ class World
 
 typedef World* PWorld;
 
+GraphicObject::GraphicObject()
+{
+    Primitive = GL_LINE_LOOP;
+}
+
+GraphicObject::~GraphicObject()
+{
+
+}
+
+void GraphicObject::ChangePrimitive()
+{
+    if (Primitive == GL_LINE_LOOP)
+    {
+        Primitive = GL_LINE_STRIP;
+    }
+    else
+    {
+        Primitive = GL_LINE_LOOP;
+    }
+}
+
 void GraphicObject::Draw()
 {
     glLineWidth(1.0f);
 
     glColor3f(0.0f, 0.0f, 0.0f);
-    glBegin(GL_LINE_LOOP);
+    glBegin(Primitive);
 
     for (size_t i = 0; i < Points.size(); i++)
     {

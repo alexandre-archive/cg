@@ -9,6 +9,7 @@
 #define KEY_TAB 9
 #define KEY_ESC 27
 #define KEY_DEL 127
+#define KEY_SPACE 32
 
 GLint width  = 400,
       height = 400;
@@ -77,7 +78,6 @@ void display()
 
     drawMode();
     world->Draw();
-    //DrawXYAxes();
 
     glutSwapBuffers();
 }
@@ -94,11 +94,23 @@ void keyPress(unsigned char key, int x, int y)
             glutPostRedisplay();
         break;
         case KEY_DEL:
+            // Deleta o ponto ou poligono se for seleção.
             // Limpa a tela se for edição.
-            if (!selectionMode)
+            if (selectionMode)
+            {
+
+            }
+            else
             {
                 currentObj = -1;
                 world->Objects.clear();
+                glutPostRedisplay();
+            }
+        break;
+        case KEY_SPACE:
+            if (currentObj != -1)
+            {
+                world->Objects[currentObj]->ChangePrimitive();
                 glutPostRedisplay();
             }
         break;
