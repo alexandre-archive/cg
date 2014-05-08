@@ -22,7 +22,10 @@ GLfloat ortho2D_minX = -400.0f,
 bool selectionMode = false;
 
 PUniverse universe;
-int currentObj = -1;
+
+int currentObj    = -1,
+    currentVertex = -1;
+
 bool isMouseDown = false;
 
 void resize(int width, int height)
@@ -86,12 +89,28 @@ void keyPress(unsigned char key, int x, int y)
             // Limpa a tela se for edição.
             if (selectionMode)
             {
-                if (currentObj != -1)
+                if (currentObj != -1 && currentVertex != -1)
+                {
+                    universe->Objects[currentObj]->Points.erase(universe->Objects[currentObj]->Points.begin() + currentVertex);
+                    universe->Objects[currentObj]->SetSelectedVertex(-1);
+
+                    int size = universe->Objects[currentObj]->Points.size();
+
+                    if (size <= 1)
+                    {
+                        universe->Objects.erase(universe->Objects.begin() + currentObj);
+                    }
+
+                    currentObj = -1;
+                    currentVertex = -1;
+                }
+                else if (currentObj != -1)
                 {
                     universe->Objects.erase(universe->Objects.begin() + currentObj);
                     currentObj = -1;
-                    glutPostRedisplay();
                 }
+
+                glutPostRedisplay();
             }
             else
             {
@@ -197,12 +216,17 @@ void mouseClick(int button, int state, int x, int y)
 
     if (selectionMode)
     {
+        currentVertex = -1;
+        currentObj = -1;
+
         for (size_t i = 0; i < universe->Objects.size(); ++i)
         {
             int point = universe->Objects[i]->GetSelectedVertex(px, py);
 
             if (point != -1)
             {
+                currentVertex = point;
+                currentObj = i;
                 universe->Objects[i]->SetSelectedVertex(point);
             }
             else
@@ -221,18 +245,19 @@ void mouseClick(int button, int state, int x, int y)
             {
                 isMouseDown = true;
 
+                Point ps;
+                ps.x = px;
+                ps.y = py;
+
                 // É um novo
                 if (currentObj == -1)
                 {
                     universe->Objects.push_back(new GraphicObject());
                     currentObj = universe->Objects.size() - 1;
+                    // O 1o ponto duplica-se, para desenha o rastro.
+                    universe->Objects[currentObj]->Points.push_back(ps);
                 }
 
-                Point ps;
-                ps.x = px;
-                ps.y = py;
-
-                universe->Objects[currentObj]->Points.push_back(ps);
                 universe->Objects[currentObj]->Points.push_back(ps);
 
                 universe->Objects[currentObj]->CalculateBBox();
@@ -244,8 +269,10 @@ void mouseClick(int button, int state, int x, int y)
                 if (currentObj != -1)
                 {
                     Point& pe = universe->Objects[currentObj]->Points.back();
+
                     pe.x = px;
                     pe.y = py;
+
                     universe->Objects[currentObj]->CalculateBBox();
                 }
             }
