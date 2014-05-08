@@ -17,6 +17,7 @@ class GraphicObject
         BBox                   Bbox;
         vector<GraphicObject>  Objects;
         vector<Point>          Points;
+        float                  LineWidth;
 
         GraphicObject();
         ~GraphicObject();

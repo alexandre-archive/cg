@@ -179,6 +179,28 @@ void keyPress(unsigned char key, int x, int y)
                 glutPostRedisplay();
             }
         break;
+        case 'M':
+        case 'm':
+            if (currentObj != -1)
+            {
+                if (universe->Objects[currentObj]->LineWidth < 6.0f)
+                {
+                    universe->Objects[currentObj]->LineWidth += 1.0f;
+                }
+                glutPostRedisplay();
+            }
+        break;
+        case 'N':
+        case 'n':
+            if (currentObj != -1)
+            {
+                if (universe->Objects[currentObj]->LineWidth > 1.0f)
+                {
+                    universe->Objects[currentObj]->LineWidth -= 1.0f;
+                }
+                glutPostRedisplay();
+            }
+        break;
         default:
             cout << key << "\n";
         break;

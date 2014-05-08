@@ -11,6 +11,7 @@ GraphicObject::GraphicObject()
     primitive = GL_LINE_LOOP;
     selected = false;
     selectedVertex = -1;
+    LineWidth = 2.0f;
     SetColor(0.0f, 0.0f, 0.0f);
 }
 
@@ -40,7 +41,7 @@ void GraphicObject::ChangePrimitive()
 **/
 void GraphicObject::Draw()
 {
-    glLineWidth(1.0f);
+    glLineWidth(LineWidth);
 
     glColor3f(color.r, color.g, color.b);
     glBegin(primitive);
