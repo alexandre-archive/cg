@@ -93,13 +93,7 @@ void keyPress(unsigned char key, int x, int y)
         break;
         case KEY_TAB:
             selectionMode = !selectionMode;
-
-            // Remove a seleção de todos. Caso contrário ficara com a BBox.
-            for (size_t i = 0; i < universe->Objects.size(); i++)
-            {
-                universe->Objects[i]->SetSelected(false);
-            }
-
+            universe->SelectNone();
             glutPostRedisplay();
         break;
         case KEY_DEL:
@@ -208,15 +202,32 @@ void mouseMove(int x, int y)
     }
 }
 
-void mouseEvent(int button, int state, int x, int y)
+void mouseClick(int button, int state, int x, int y)
 {
     // button  GLUT_LEFT_BUTTON, GLUT_MIDDLE_BUTTON, or GLUT_RIGHT_BUTTON
     // state GLUT_UP or GLUT_DOWN
     //cout << "x = " << x << " y = " << y << "\n";
+    auto px = convertXSpace(x);
+    auto py = convertYSpace(y);
 
     if (selectionMode)
     {
+        for (size_t i = 0; i < universe->Objects.size(); ++i)
+        {
+            int point = universe->Objects[i]->GetSelectedVertice(px, py);
 
+            if (point != -1)
+            {
+                cout << "achou << x = " << universe->Objects[i]->Points[point].x << " y = " << universe->Objects[i]->Points[point].y << "\n";
+                universe->Objects[i]->SetSelectedVertice(point);
+            }
+            else
+            {
+                universe->Objects[i]->SetSelectedVertice(-1);
+            }
+        }
+
+        glutPostRedisplay();
     }
     else
     {
@@ -234,8 +245,8 @@ void mouseEvent(int button, int state, int x, int y)
                 }
 
                 Point ps;
-                ps.x = convertXSpace(x);
-                ps.y = convertYSpace(y);
+                ps.x = px;
+                ps.y = py;
 
                 universe->Objects[currentObj]->Points.push_back(ps);
                 universe->Objects[currentObj]->Points.push_back(ps);
@@ -249,8 +260,8 @@ void mouseEvent(int button, int state, int x, int y)
                 if (currentObj != -1)
                 {
                     Point& pe = universe->Objects[currentObj]->Points.back();
-                    pe.x = convertXSpace(x);
-                    pe.y = convertYSpace(y);
+                    pe.x = px;
+                    pe.y = py;
                     universe->Objects[currentObj]->CalculateBBox();
                 }
             }
@@ -318,7 +329,7 @@ int main(int argc, const char * argv[])
     glutKeyboardFunc(keyPress);
     glutSpecialFunc(specialKeyPress);
     glutMotionFunc(mouseMove);
-    glutMouseFunc(mouseEvent);
+    glutMouseFunc(mouseClick);
 
     init();
     glutMainLoop();

@@ -15,6 +15,7 @@ class Universe
 {
     public:
         vector<PGraf> Objects;
+        void SelectNone();
         void Zoom();
         void Pan();
         void Draw();

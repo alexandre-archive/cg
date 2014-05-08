@@ -16,3 +16,17 @@ void Universe::Draw()
         }
     }
 }
+void Universe::SelectNone()
+{
+    // Remove a seleção de todos. Caso contrário ficara com a BBox.
+    for (size_t i = 0; i < Objects.size(); i++)
+    {
+        Objects[i]->SetSelected(false);
+    }
+
+    // Remove o ponto dos vertices.
+    for (size_t i = 0; i < Objects.size(); ++i)
+    {
+        Objects[i]->SetSelectedVertice(-1);
+    }
+}
