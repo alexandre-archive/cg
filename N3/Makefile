@@ -11,6 +11,12 @@ CVERSION = -std=c++11
 
 all: clean n3
 
+debug: clean n3debug
+
+n3debug:
+	$(info Compilando modo degug...)
+	g++ -g -o n3$(EXT) n3.cpp $< $(CVERSION) $(CFLAGS) $(GLFLAGS)
+
 n3:
 	$(info Compilando...)
 	g++ -o n3$(EXT) n3.cpp $< $(CVERSION) $(CFLAGS) $(GLFLAGS)
