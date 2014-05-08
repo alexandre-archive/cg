@@ -13,6 +13,10 @@ all: clean n3
 
 debug: clean n3debug
 
+doxygen:
+	$(info Gerando documentacao...)
+	doxygen doxygen.config
+
 n3debug:
 	$(info Compilando modo degug...)
 	g++ -g -o n3$(EXT) n3.cpp $< $(CVERSION) $(CFLAGS) $(GLFLAGS)
