@@ -241,36 +241,36 @@ void mouseClick(int button, int state, int x, int y)
 
     if (selectionMode)
     {
-        isMouseDown = false;
-
-        // Mover o ponto se for o mesmo
-        if (currentObj != -1 && currentVertex != -1 && currentVertex == universe->Objects[currentObj]->GetSelectedVertex(px, py))
+        if (state == GLUT_DOWN)
         {
             isMouseDown = true;
-        }
-        else
-        {
-            currentVertex = -1;
-            currentObj = -1;
 
-            for (size_t i = 0; i < universe->Objects.size(); ++i)
+            if (!(currentObj != -1 && currentVertex != -1 && currentVertex == universe->Objects[currentObj]->GetSelectedVertex(px, py)))
             {
-                int point = universe->Objects[i]->GetSelectedVertex(px, py);
+                currentVertex = -1;
+                currentObj = -1;
 
-                if (point != -1)
+                for (size_t i = 0; i < universe->Objects.size(); ++i)
                 {
-                    currentVertex = point;
-                    currentObj = i;
-                    universe->Objects[i]->SetSelectedVertex(point);
-                }
-                else
-                {
-                    universe->Objects[i]->SetSelectedVertex(-1);
+                    int point = universe->Objects[i]->GetSelectedVertex(px, py);
+
+                    if (point != -1)
+                    {
+                        currentVertex = point;
+                        currentObj = i;
+                        universe->Objects[i]->SetSelectedVertex(point);
+                    }
+                    else
+                    {
+                        universe->Objects[i]->SetSelectedVertex(-1);
+                    }
                 }
             }
         }
-
-        glutPostRedisplay();
+        else
+        {
+            isMouseDown = false;
+        }
     }
     else
     {
