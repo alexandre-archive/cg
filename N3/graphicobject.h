@@ -12,7 +12,7 @@ class GraphicObject
         bool  selected;
         int   primitive;
         Color color;
-        int   selectedVertice;
+        int   selectedVertex;
     public:
         BBox                   Bbox;
         vector<GraphicObject>  Objects;
@@ -26,10 +26,10 @@ class GraphicObject
         void DrawPoint(Point p);
         void ChangePrimitive();
         bool IsMouseInside(int x, int y);
-        int  GetSelectedVertice(int x, int y);
+        int  GetSelectedVertex(int x, int y);
         void CalculateBBox();
         void SetSelected(bool selected) { this->selected = selected; };
-        void SetSelectedVertice(int selected) { this->selectedVertice = selected; };
+        void SetSelectedVertex(int pos) { this->selectedVertex = pos; };
         void SetColor(float r, float g, float b)
         { 
             this->color.r = r;

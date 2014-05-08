@@ -1,6 +1,6 @@
 #if defined(__APPLE__) || defined(MACOSX)
-    #include <OpenGL/gl.h>
     #include <GLUT/glut.h>
+    #include <OpenGL/gl.h>
 #else
     #include <GL/gl.h>
     #include <GL/glut.h>
@@ -11,6 +11,7 @@
 #endif
 
 #include <iostream>
+#include <string.h>
 #include <vector>
 
 using namespace std;
@@ -43,6 +44,19 @@ struct BBox
 {
     float minX, maxX, minY, maxY;
 };
+
+inline void DrawText(int x, int y, char *s)
+{
+    int len, i;
+    glColor3f(1.0f, 0.0f, 0.0f);
+    glRasterPos2f(x, y);
+    len = (int) strlen(s);
+
+    for (i = 0; i < len; i++)
+    {
+        glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12, s[i]);
+    }
+}
 
 inline void DrawRectangle(float minX, float maxX, float minY, float maxY)
 {

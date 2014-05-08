@@ -10,7 +10,7 @@ GraphicObject::GraphicObject()
 {
     primitive = GL_LINE_LOOP;
     selected = false;
-    selectedVertice = -1;
+    selectedVertex = -1;
     SetColor(0.0f, 0.0f, 0.0f);
 }
 
@@ -57,9 +57,9 @@ void GraphicObject::Draw()
         DrawBBox();
     }
 
-    if (selectedVertice != -1)
+    if (selectedVertex != -1)
     {
-        DrawPoint(Points[selectedVertice]);
+        DrawPoint(Points[selectedVertex]);
     }
 }
 
@@ -167,7 +167,7 @@ bool InRange(int value, int nominal, int precision)
     Se X e Y corresponderem a um vértice, retorna a posição deste vértice.
     Caso contrário retornará -1;
 **/
-int GraphicObject::GetSelectedVertice(int x, int y)
+int GraphicObject::GetSelectedVertex(int x, int y)
 {
     int nearPointPos = -1;
 

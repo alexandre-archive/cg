@@ -27,6 +27,6 @@ void Universe::SelectNone()
     // Remove o ponto dos vertices.
     for (size_t i = 0; i < Objects.size(); ++i)
     {
-        Objects[i]->SetSelectedVertice(-1);
+        Objects[i]->SetSelectedVertex(-1);
     }
 }

@@ -3,10 +3,8 @@
     #include "base.h"
 #endif
 
-#include <string.h>
-
-#include "universe.cpp"
 #include "graphicobject.cpp"
+#include "universe.cpp"
 
 #define KEY_TAB 9
 #define KEY_ESC 27
@@ -30,19 +28,6 @@ bool isMouseDown = false;
 void resize(int width, int height)
 {
 
-}
-
-void DrawText(int x, int y, char *s)
-{
-    int len, i;
-    glColor3f(1.0f, 0.0f, 0.0f);
-    glRasterPos2f(x, y);
-    len = (int) strlen(s);
-
-    for (i = 0; i < len; i++)
-    {
-        glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12, s[i]);
-    }
 }
 
 /**
@@ -134,8 +119,9 @@ void keyPress(unsigned char key, int x, int y)
                 else
                 {
                     currentObj += 1;
+                    int size = universe->Objects.size();
 
-                    if (currentObj >= universe->Objects.size())
+                    if (currentObj >= size)
                     {
                         currentObj = 0;
                     }
@@ -204,9 +190,8 @@ void mouseMove(int x, int y)
 
 void mouseClick(int button, int state, int x, int y)
 {
-    // button  GLUT_LEFT_BUTTON, GLUT_MIDDLE_BUTTON, or GLUT_RIGHT_BUTTON
-    // state GLUT_UP or GLUT_DOWN
-    //cout << "x = " << x << " y = " << y << "\n";
+    // button GLUT_LEFT_BUTTON, GLUT_MIDDLE_BUTTON, or GLUT_RIGHT_BUTTON
+    // state  GLUT_UP or GLUT_DOWN
     auto px = convertXSpace(x);
     auto py = convertYSpace(y);
 
@@ -214,16 +199,15 @@ void mouseClick(int button, int state, int x, int y)
     {
         for (size_t i = 0; i < universe->Objects.size(); ++i)
         {
-            int point = universe->Objects[i]->GetSelectedVertice(px, py);
+            int point = universe->Objects[i]->GetSelectedVertex(px, py);
 
             if (point != -1)
             {
-                cout << "achou << x = " << universe->Objects[i]->Points[point].x << " y = " << universe->Objects[i]->Points[point].y << "\n";
-                universe->Objects[i]->SetSelectedVertice(point);
+                universe->Objects[i]->SetSelectedVertex(point);
             }
             else
             {
-                universe->Objects[i]->SetSelectedVertice(-1);
+                universe->Objects[i]->SetSelectedVertex(-1);
             }
         }
 
@@ -265,9 +249,6 @@ void mouseClick(int button, int state, int x, int y)
                     universe->Objects[currentObj]->CalculateBBox();
                 }
             }
-
-            //cout << "Current Obj = " << currentObj << "\n";
-            //cout << "Mouse is Down = " << isMouseDown << "\n";
         }
         else
         {
