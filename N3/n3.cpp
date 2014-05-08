@@ -192,13 +192,16 @@ void specialKeyPress(int key, int x, int y)
 
 void mouseMove(int x, int y)
 {
-    //cout << "Current Obj = " << currentObj << "\n";
-    //cout << "Mouse is Down = " << isMouseDown << "\n";
-
-    if (isMouseDown && currentObj != -1)
+    if (isMouseDown && currentObj != -1 && currentVertex != -1)
     {
-        //cout << "x = " << x << " y = " << y << "\n";
+        Point& pe = universe->Objects[currentObj]->Points[currentVertex];
+        pe.x = convertXSpace(x);
+        pe.y = convertYSpace(y);
 
+        glutPostRedisplay();
+    }
+    else if (isMouseDown && currentObj != -1)
+    {
         Point& pe = universe->Objects[currentObj]->Points.back();
         pe.x = convertXSpace(x);
         pe.y = convertYSpace(y);
@@ -216,22 +219,32 @@ void mouseClick(int button, int state, int x, int y)
 
     if (selectionMode)
     {
-        currentVertex = -1;
-        currentObj = -1;
+        isMouseDown = false;
 
-        for (size_t i = 0; i < universe->Objects.size(); ++i)
+        // Mover o ponto se for o mesmo
+        if (currentObj != -1 && currentVertex != -1 && currentVertex == universe->Objects[currentObj]->GetSelectedVertex(px, py))
         {
-            int point = universe->Objects[i]->GetSelectedVertex(px, py);
+            isMouseDown = true;
+        }
+        else
+        {
+            currentVertex = -1;
+            currentObj = -1;
 
-            if (point != -1)
+            for (size_t i = 0; i < universe->Objects.size(); ++i)
             {
-                currentVertex = point;
-                currentObj = i;
-                universe->Objects[i]->SetSelectedVertex(point);
-            }
-            else
-            {
-                universe->Objects[i]->SetSelectedVertex(-1);
+                int point = universe->Objects[i]->GetSelectedVertex(px, py);
+
+                if (point != -1)
+                {
+                    currentVertex = point;
+                    currentObj = i;
+                    universe->Objects[i]->SetSelectedVertex(point);
+                }
+                else
+                {
+                    universe->Objects[i]->SetSelectedVertex(-1);
+                }
             }
         }
 
