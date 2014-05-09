@@ -98,9 +98,9 @@ bool GraphicObject::IsMouseInside(int x, int y)
     }
 
     int count = 0;
-    double ti;
-    double yint = y;
-    double xint = 0;
+    float ti;
+    float yint = y;
+    float xint = 0;
 
     for (size_t i = 0; i < Points.size() - 1; i++)
     {
@@ -130,6 +130,7 @@ bool GraphicObject::IsMouseInside(int x, int y)
         }
     }
 
+    // Calcula o ultimo com o primeiro.
     auto p1 = Points[Points.size() - 1];
     auto p2 = Points[0];
 
