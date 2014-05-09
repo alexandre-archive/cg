@@ -98,48 +98,51 @@ bool GraphicObject::IsMouseInside(int x, int y)
     }
 
     int count = 0;
-    int px, px1, py, py1;
+    double ti;
+    double yint = y;
+    double xint = 0;
 
     for (size_t i = 0; i < Points.size() - 1; i++)
     {
-        px  = Points[i].x;
-        py  = Points[i].y;
-        px1 = Points[i+1].x;
-        py1 = Points[i+1].y;
+        auto p1 = Points[i + 1];
+        auto p2 = Points[i];
 
-        if (py != py1)
+        if (p1.x == x && p1.y == y)
         {
-            int xint = px + (((y-py) * (px1 - px)) / (py1 - py)),
-                yint = py + (((x-px) * (px1 - px)) / (px1 - px));
+            return true;
+        }
 
-            if (xint == x)
-            {
-                count++;
-            }
-            else if (xint > x && yint > min(py, py1) && yint <= max(py, py1))
+        ti = 0;
+
+        if ((p2.y - p1.y) != 0)
+        {
+            ti = (yint - p1.y) / (p2.y - p1.y);
+        }
+
+        if (ti > 0 && ti < 1)
+        {
+            xint = p1.x + (p2.x - p1.x) * ti;
+
+            if (xint > x)
             {
                 count++;
             }
         }
-        else if (y == py && x >= min(px, px1) && x <= max(px, px1))
+    }
+
+    auto p1 = Points[Points.size() - 1];
+    auto p2 = Points[0];
+
+    ti = (yint - p1.y) / (p2.y - p1.y);
+
+    if (ti > 0 && ti < 1)
+    {
+        xint = p1.x + (p2.x - p1.x) * ti;
+
+        if (xint > x)
         {
             count++;
         }
-/*
-        // TODO: Depende do poligono (concavo) ele não seleciona.
-        if(y > min(py,py1))
-        {
-            if(y <= max(py, py1) && x <= max(px, px1) && py != py1)
-            {
-                int intx = px + (((y-py) * (px1 - px)) / (py1 - py));
-
-                if(x <= intx || px == px1)
-                {
-                    count++;
-                }
-            }
-        }
-*/
     }
 
     return count % 2 != 0;
