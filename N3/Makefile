@@ -28,4 +28,4 @@ n3:
 clean:
 	$(info Removendo objetos...)
 	rm -f n3$(EXT)
-	rm -r html/
+	rm -f -r html/
