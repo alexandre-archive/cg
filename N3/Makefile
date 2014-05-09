@@ -13,7 +13,7 @@ all: clean n3
 
 debug: clean n3debug
 
-doxygen:
+doc:
 	$(info Gerando documentacao...)
 	doxygen doxygen.config
 
@@ -28,4 +28,4 @@ n3:
 clean:
 	$(info Removendo objetos...)
 	rm -f n3$(EXT)
-	rm -f *.o
+	rm -r html/
