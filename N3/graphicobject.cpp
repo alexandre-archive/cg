@@ -92,7 +92,57 @@ void GraphicObject::DrawPoint(Point p)
 **/
 bool GraphicObject::IsMouseInside(int x, int y)
 {
-    return false;
+    if (Points.size() < 2)
+    {
+        return false;
+    }
+
+    int count = 0;
+    int px, px1, py, py1;
+
+    for (size_t i = 0; i < Points.size() - 1; i++)
+    {
+        px  = Points[i].x;
+        py  = Points[i].y;
+        px1 = Points[i+1].x;
+        py1 = Points[i+1].y;
+
+        if (py != py1)
+        {
+            int xint = px + (((y-py) * (px1 - px)) / (py1 - py)),
+                yint = py + (((x-px) * (px1 - px)) / (px1 - px));
+
+            if (xint == x)
+            {
+                count++;
+            }
+            else if (xint > x && yint > min(py, py1) && yint <= max(py, py1))
+            {
+                count++;
+            }
+        }
+        else if (y == py && x >= min(px, px1) && x <= max(px, px1))
+        {
+            count++;
+        }
+/*
+        // TODO: Depende do poligono (concavo) ele não seleciona.
+        if(y > min(py,py1))
+        {
+            if(y <= max(py, py1) && x <= max(px, px1) && py != py1)
+            {
+                int intx = px + (((y-py) * (px1 - px)) / (py1 - py));
+
+                if(x <= intx || px == px1)
+                {
+                    count++;
+                }
+            }
+        }
+*/
+    }
+
+    return count % 2 != 0;
 }
 
 /**
