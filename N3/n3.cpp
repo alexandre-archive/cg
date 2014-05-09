@@ -219,7 +219,7 @@ void mouseMove(int x, int y)
         Point& pe = universe->Objects[currentObj]->Points[currentVertex];
         pe.x = convertXSpace(x);
         pe.y = convertYSpace(y);
-
+        universe->Objects[currentObj]->CalculateBBox();
         glutPostRedisplay();
     }
     else if (isMouseDown && currentObj != -1)
@@ -227,7 +227,7 @@ void mouseMove(int x, int y)
         Point& pe = universe->Objects[currentObj]->Points.back();
         pe.x = convertXSpace(x);
         pe.y = convertYSpace(y);
-
+        universe->Objects[currentObj]->CalculateBBox();
         glutPostRedisplay();
     }
 }
