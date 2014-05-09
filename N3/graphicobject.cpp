@@ -174,6 +174,7 @@ int GraphicObject::GetSelectedVertex(int x, int y)
 
     for (size_t i = 0; i < Points.size(); i++)
     {
+        // TODO: Usar distancia euclidiana para calcular.
         if (Points[i].x == x && Points[i].y == y)
         {
             return i;

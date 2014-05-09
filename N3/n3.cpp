@@ -262,7 +262,26 @@ void mouseClick(int button, int state, int x, int y)
                     }
                     else
                     {
+                        // TODO: Aplicar funçaõ map para desabilitar todos os selecionados.
                         universe->Objects[i]->SetSelectedVertex(-1);
+                    }
+                }
+            }
+
+            if (currentVertex == -1)
+            {
+                for (size_t i = 0; i < universe->Objects.size(); ++i)
+                {
+                    auto g = universe->Objects[i];
+
+                    if (g->IsMouseInside(px, py))
+                    {
+                        g->SetSelected(true);
+                    }
+                    else
+                    {
+                        // TODO: Aplicar funçaõ map para desabilitar todos os selecionados.
+                        g->SetSelected(false);
                     }
                 }
             }
