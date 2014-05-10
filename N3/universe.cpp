@@ -30,6 +30,8 @@ void Universe::Draw()
 **/
 void Universe::SelectNone()
 {
+    currentObj = -1;
+
     // Remove a seleção de todos. Caso contrário ficara com a BBox.
     for (size_t i = 0; i < ObjCount(); i++)
     {

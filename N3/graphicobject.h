@@ -28,14 +28,19 @@ class GraphicObject
         void Draw();
         void DrawBBox();
         void DrawPoint(Point p);
+
         void ChangePrimitive();
+
         bool IsMouseInside(int x, int y);
         int  GetSelectedVertexIndex(int x, int y);
         void CalculateBBox();
+        bool IsSelected() { return this->selected; };
         void SetSelected(bool selected) { this->selected = selected; };
-        void SetSelectedVertex(int index) { this->currentVertex = index; };
+
         bool HasSelectedVertex() { return currentVertex >= 0; };
+        void SetSelectedVertex(int index) { this->currentVertex = index; };
         Point& GetSelectedVertex();
+
         void SetColor(float r, float g, float b)
         { 
             this->color.r = r;

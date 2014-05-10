@@ -23,7 +23,7 @@ GLfloat ortho2D_minX = -400.0f,
         ortho2D_minY = -400.0f,
         ortho2D_maxY =  400.0f;
 
-bool selectionMode = false,
+bool isSelectionMode = false,
      isSelectFromSelectionMode = false;
 
 PUniverse universe;
@@ -37,7 +37,7 @@ void resize(int width, int height)
 
 void drawMode()
 {
-    DrawText(ortho2D_minX + 4, ortho2D_minY + 4, (char*)(selectionMode ? "Selecao (Tab)" : "Edicao (Tab)"));
+    DrawText(ortho2D_minX + 4, ortho2D_minY + 4, (char*)(isSelectionMode ? "Selecao (Tab)" : "Edicao (Tab)"));
 }
 
 void display()
@@ -53,6 +53,7 @@ void display()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     drawMode();
+
     universe->Draw();
 
     glutSwapBuffers();
@@ -72,7 +73,7 @@ void keyPress(unsigned char key, int x, int y)
             exit(0);
         break;
         case KEY_TAB:
-            selectionMode = !selectionMode;
+            isSelectionMode = !isSelectionMode;
             glutPostRedisplay();
         break;
         case KEY_DEL:
@@ -119,7 +120,7 @@ void keyPress(unsigned char key, int x, int y)
         case 'P':
         case 'p':
             // Seleciona um poligono.
-            if (selectionMode && universe->ObjCount() > 0)
+            if (isSelectionMode && universe->ObjCount() > 0)
             {
                 universe->SelectNextObj();
                 glutPostRedisplay();
@@ -201,7 +202,7 @@ void keyPress(unsigned char key, int x, int y)
 
 void mouseMove(int x, int y)
 {
-    if (!isMouseDown || !universe->HasSelectedObj()) return;
+    if (!isMouseDown || !universe->HasSelectedObj() || universe->GetSelectedObj()->IsSelected()) return;
 
     int px = convertXSpace(x, width);
     int py = convertYSpace(y, height);
@@ -230,118 +231,100 @@ void mouseClick(int button, int state, int x, int y)
 {
     // button GLUT_LEFT_BUTTON, GLUT_MIDDLE_BUTTON, or GLUT_RIGHT_BUTTON
     // state  GLUT_UP or GLUT_DOWN
-    int px = convertXSpace(x, width);
-    int py = convertYSpace(y, height);
+    isMouseDown = state == GLUT_DOWN;
 
-    if (selectionMode)
+    // Click com o botão direito deseleciona tudo.
+    if (button == GLUT_RIGHT_BUTTON)
     {
-        if (state == GLUT_DOWN)
-        {
-            isMouseDown = true;
+        universe->SelectNone();
+        //universe->SetSelectedObj(-1);
+    }
+    else if (button == GLUT_LEFT_BUTTON)
+    {
+        int px = convertXSpace(x, width);
+        int py = convertYSpace(y, height);
 
-            PGraf g = universe->GetSelectedObj();
-/*
-            if (!(g && g->HasSelectedVertex()/* && g->GetSelectedVertex() == g->GetSelectedVertex(px, py)* /))
+        if (isSelectionMode)
+        {
+            if (isMouseDown)
             {
                 universe->SelectNone();
 
-                for (size_t i = 0; i < universe->Objects.size(); ++i)
+                // Verifica se selecionou um ponto (vértice).
+                for (size_t i = 0; i < universe->ObjCount(); ++i)
                 {
-                    int point = universe->Objects[i]->GetSelectedVertexIndex(px, py);
+                    PGraf g = universe->Objects[i];
+
+                    int point = g->GetSelectedVertexIndex(px, py);
 
                     if (point != -1)
                     {
                         universe->SetSelectedObj(i);
-                        universe->Objects[i]->SetSelectedVertex(point);
+                        g->SetSelectedVertex(point);
                     }
                     else
                     {
-                        // TODO: Aplicar funçaõ map para desabilitar todos os selecionados.
-                        universe->Objects[i]->SetSelectedVertex(-1);
+                        g->SetSelectedVertex(-1);
                     }
                 }
-            }
-*/
-            if (g && !g->HasSelectedVertex())
-            {
-                for (size_t i = 0; i < universe->Objects.size(); ++i)
-                {
-                    auto g = universe->Objects[i];
 
-                    if (g->IsMouseInside(px, py))
+                // Não selecionou nenhum ponto, verifica se selecionou um objeto então.
+                if (!universe->HasSelectedObj())
+                {
+                    // Verifica se está dentro de um poligono. (Selecionou um com o mouse).
+                    for (size_t i = 0; i < universe->ObjCount(); ++i)
                     {
-                        g->SetSelected(true);
-                        universe->SetSelectedObj(i);
-                    }
-                    else
-                    {
-                        // TODO: Aplicar funçaõ map para desabilitar todos os selecionados.
-                        g->SetSelected(false);
+                        PGraf g = universe->Objects[i];
+
+                        if (g->IsMouseInside(px, py))
+                        {
+                            g->SetSelected(true);
+                            universe->SetSelectedObj(i);
+                        }
+                        else
+                        {
+                            g->SetSelected(false);
+                        }
                     }
                 }
             }
         }
         else
         {
-            isMouseDown = false;
-        }
-    }
-    else
-    {
-        if (button == GLUT_LEFT_BUTTON)
-        {
-            if (state == GLUT_DOWN)
+            // Inserção de um ponto.
+            if (isMouseDown)
             {
-                isMouseDown = true;
-
                 Point ps;
                 ps.x = px;
                 ps.y = py;
 
-                if (isSelectFromSelectionMode)
-                {
-                    
-                }
-                else
-                {
-                    // É um novo
-                    if (!universe->HasSelectedObj())
-                    {
-                        universe->Objects.push_back(new GraphicObject());
-                        universe->SetSelectedObj(universe->Objects.size() - 1);
-                        // O 1o ponto duplica-se, para desenha o rastro.
-                        universe->GetSelectedObj()->Points.push_back(ps);
-                    }
+                PGraf g = universe->GetSelectedObj();
 
-                    universe->GetSelectedObj()->Points.push_back(ps);
-                    universe->GetSelectedObj()->CalculateBBox();
+                // Não está desenhando nenhum, então é um novo gráfico.
+                if (!g)
+                {
+                    g = new GraphicObject();
+                    universe->Objects.push_back(g);
+                    universe->SetSelectedObj(universe->ObjCount() - 1);
+                    // O 1o ponto duplica-se, para desenha o rastro.
+                    g->Points.push_back(ps);
                 }
+
+                g->Points.push_back(ps);
+                g->CalculateBBox();
+
             }
-            else if (state == GLUT_UP)
+            // Término de inserção de um ponto, caso tenha algum poligono.
+            else if (universe->HasSelectedObj())
             {
-                isMouseDown = false;
+                PGraf g = universe->GetSelectedObj();
+                Point& pe = g->Points.back();
 
-                if (isSelectFromSelectionMode)
-                {
-                   
-                }
-                else
-                {
-                    if (universe->HasSelectedObj())
-                    {
-                        Point& pe = universe->GetSelectedObj()->Points.back();
+                pe.x = px;
+                pe.y = py;
 
-                        pe.x = px;
-                        pe.y = py;
-
-                        universe->GetSelectedObj()->CalculateBBox();
-                    }
-                }
+                g->CalculateBBox();
             }
-        }
-        else
-        {
-            universe->SetSelectedObj(-1);
         }
     }
 

@@ -19,13 +19,13 @@ class Universe
         vector<PGraf> Objects;
         Universe();
         ~Universe();
-        void SelectNone();
-        void Draw();
-        void SetSelectedObj(int index) { this->currentObj = index; };
-        bool HasSelectedObj() { return currentObj >= 0; };
-        PGraf GetSelectedObj();
+        void   Draw();
+        void   SelectNone();
+        bool   HasSelectedObj() { return currentObj >= 0; };
+        void   SetSelectedObj(int index) { this->currentObj = index; };
+        PGraf  GetSelectedObj();
+        PGraf  SelectNextObj();
         size_t ObjCount() { return this->Objects.size(); };
-        PGraf SelectNextObj();
 };
 
 typedef Universe* PUniverse;
