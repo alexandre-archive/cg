@@ -45,6 +45,22 @@ struct BBox
     float minX, maxX, minY, maxY;
 };
 
+/**
+    Converte o espaço X do mouse, para o espaço X do Ortho.
+**/
+inline int convertXSpace(int x, int width)
+{
+    return (x * 2) - width;
+}
+
+/**
+    Converte o espaço Y do mouse, para o espaço Y do Ortho.
+**/
+inline int convertYSpace(int y, int height)
+{
+    return (y * -2) + height;
+}
+
 inline void DrawText(int x, int y, char *s)
 {
     int len, i;

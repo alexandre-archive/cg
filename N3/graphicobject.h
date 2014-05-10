@@ -3,6 +3,10 @@
     #include "base.h"
 #endif
 
+class GraphicObject;
+
+typedef GraphicObject* PGraf;
+
 /**
     Representa um Objeto Gráfico no Universo.
 **/
@@ -10,14 +14,13 @@ class GraphicObject
 {
     private:
         bool  selected;
-        int   primitive;
         Color color;
-        int   selectedVertex;
+        int   primitive, currentVertex, selectedChildren;
     public:
-        BBox                   Bbox;
-        vector<GraphicObject>  Objects;
-        vector<Point>          Points;
-        float                  LineWidth;
+        BBox           Bbox;
+        vector<PGraf>  Objects;
+        vector<Point>  Points;
+        float          LineWidth;
 
         GraphicObject();
         ~GraphicObject();
@@ -27,19 +30,23 @@ class GraphicObject
         void DrawPoint(Point p);
         void ChangePrimitive();
         bool IsMouseInside(int x, int y);
-        int  GetSelectedVertex(int x, int y);
+        int  GetSelectedVertexIndex(int x, int y);
         void CalculateBBox();
         void SetSelected(bool selected) { this->selected = selected; };
-        void SetSelectedVertex(int pos) { this->selectedVertex = pos; };
+        void SetSelectedVertex(int index) { this->currentVertex = index; };
+        bool HasSelectedVertex() { return currentVertex >= 0; };
+        Point& GetSelectedVertex();
         void SetColor(float r, float g, float b)
         { 
             this->color.r = r;
             this->color.g = g;
             this->color.b = b;
         };
+
         void ChangeRColor();
         void ChangeGColor();
         void ChangeBColor();
-};
 
-typedef GraphicObject* PGraf;
+        void SetSelectedChildren(int index) { this->selectedChildren = index; };
+        PGraf GetSelectedChildren() { return this->selectedChildren < 0 ? NULL : this->Objects[this->selectedChildren]; };
+};
