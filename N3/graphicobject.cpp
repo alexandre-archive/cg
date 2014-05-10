@@ -12,7 +12,9 @@ GraphicObject::GraphicObject()
     selected = false;
     currentVertex = -1;
     LineWidth = 2.0f;
-    SetColor(0.0f, 0.0f, 0.0f);
+    BackColor.r = 0.0f;
+    BackColor.g = 0.0f;
+    BackColor.b = 0.0f;
 }
 
 GraphicObject::~GraphicObject()
@@ -43,7 +45,7 @@ void GraphicObject::Draw()
 {
     glLineWidth(LineWidth);
 
-    glColor3f(color.r, color.g, color.b);
+    glColor3f(BackColor.r, BackColor.g, BackColor.b);
     glBegin(primitive);
 
     for (size_t i = 0; i < Points.size(); i++)
@@ -128,9 +130,22 @@ bool GraphicObject::IsMouseInside(int x, int y)
         {
             xint = p1.x + (p2.x - p1.x) * ti;
 
-            if (xint > x)
+            // HACK: Se possuir apenas 2 pontos é
+            // impossível selecioná-los. Adiciona uma margem de erro.
+            if (Points.size() == 2)
             {
-                count++;
+                // TODO: Distancia euclidiana?
+                if ((xint + 8) > x || (xint - 8) > x)
+                {
+                    count++;
+                }
+            }
+            else
+            {
+                if (xint > x)
+                {
+                    count++;
+                }
             }
         }
     }
@@ -188,36 +203,6 @@ void GraphicObject::CalculateBBox()
     }
 }
 
-void GraphicObject::ChangeRColor()
-{
-    color.r += 0.1f;
-
-    if (color.r > 1.0f)
-    {
-        color.r = 0.0f;
-    }
-}
-
-void GraphicObject::ChangeGColor()
-{
-    color.g += 0.1f;
-
-    if (color.g > 1.0f)
-    {
-        color.g = 0.0f;
-    }
-}
-
-void GraphicObject::ChangeBColor()
-{
-    color.b += 0.1f;
-
-    if (color.b > 1.0f)
-    {
-        color.b = 0.0f;
-    }
-}
-
 bool InRange(int value, int nominal, int precision)
 {
     return value < (nominal + precision) && value > (nominal - precision);
@@ -256,4 +241,15 @@ Point& GraphicObject::GetSelectedVertex()
     }
 
     return Points[currentVertex];
+}
+
+void GraphicObject::DeleteSelectedVertex()
+{
+    if (currentVertex < 0)
+    {
+        return;
+    }
+
+    Points.erase(Points.begin() + currentVertex);
+    currentVertex = -1;
 }

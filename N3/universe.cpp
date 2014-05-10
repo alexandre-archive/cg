@@ -75,3 +75,14 @@ PGraf Universe::GetSelectedObj()
 
     return Objects[currentObj];
 }
+
+void Universe::DeleteSelectedObject()
+{
+    if (currentObj < 0)
+    {
+        return;
+    }
+
+    Objects.erase(Objects.begin() + currentObj);
+    SelectNone();
+}

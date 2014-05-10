@@ -29,6 +29,7 @@ bool isSelectionMode = false,
 PUniverse universe;
 
 bool isMouseDown = false;
+int action = 0;
 
 void resize(int width, int height)
 {
@@ -65,7 +66,6 @@ void display()
 void keyPress(unsigned char key, int x, int y)
 {
     PGraf g = NULL;
-    int action = 0;
 
     switch (key)
     {
@@ -79,34 +79,34 @@ void keyPress(unsigned char key, int x, int y)
         case KEY_DEL:
             // Deleta o ponto ou poligono se for seleção.
             // Limpa a tela se for edição.
-            /*if (selectionMode)
+            if (isSelectionMode)
             {
-                if (currentObj && currentVertexIndex != -1)
+                PGraf g = universe->GetSelectedObj();
+
+                if (g)
                 {
-                    currentObj->Points.erase(currentObj->Points.begin() + currentVertexIndex);
-                    currentObj->SetSelectedVertex(-1);
-
-                    int size = currentObj->Points.size();
-
-                    if (size <= 1)
+                    if (g->HasSelectedVertex())
                     {
-                        universe->Objects.erase(universe->Objects.begin() + currentObjIndex);
+                        g->DeleteSelectedVertex();
+
+                        int size = g->Points.size();
+
+                        if (size <= 1)
+                        {
+                            universe->DeleteSelectedObject();
+                        }
                     }
-
-                    Reset();
-                }
-                else if (currentObj)
-                {
-                    universe->Objects.erase(universe->Objects.begin() + currentObjIndex);
-
-                    Reset();
+                    else
+                    {
+                        universe->DeleteSelectedObject();
+                    }
                 }
             }
             else
             {
-                Reset();
+                universe->SelectNone();
                 universe->Objects.clear();
-            }*/
+            }
             glutPostRedisplay();
         break;
         case KEY_SPACE:
@@ -149,18 +149,18 @@ void keyPress(unsigned char key, int x, int y)
                 switch (action)
                 {
                     case CHANGE_COLOR_R:
-                        g->ChangeRColor();
+                        g->BackColor.r += 0.1;
                     break;
                     case CHANGE_COLOR_G:
-                        g->ChangeGColor();
+                        g->BackColor.g += 0.1;
                     break;
                     case CHANGE_COLOR_B:
-                        g->ChangeBColor();
+                        g->BackColor.b += 0.1;
                     break;
                     case CHANGE_LINE_WIDTH:
                         if (g->LineWidth < 6.0f)
                         {
-                            g->LineWidth += 1.0f;
+                            g->LineWidth += 0.5f;
                         }
                     break;
                 }
@@ -175,18 +175,18 @@ void keyPress(unsigned char key, int x, int y)
                 switch (action)
                 {
                     case CHANGE_COLOR_R:
-                        g->ChangeRColor();
+                        g->BackColor.r -= 0.1;
                     break;
                     case CHANGE_COLOR_G:
-                        g->ChangeGColor();
+                        g->BackColor.g -= 0.1;
                     break;
                     case CHANGE_COLOR_B:
-                        g->ChangeBColor();
+                        g->BackColor.b -= 0.1;
                     break;
                     case CHANGE_LINE_WIDTH:
                         if (g->LineWidth > 1.0f)
                         {
-                            g->LineWidth -= 1.0f;
+                            g->LineWidth -= 0.5f;
                         }
                     break;
                 }

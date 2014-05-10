@@ -14,9 +14,9 @@ class GraphicObject
 {
     private:
         bool  selected;
-        Color color;
         int   primitive, currentVertex, selectedChildren;
     public:
+        Color          BackColor;
         BBox           Bbox;
         vector<PGraf>  Objects;
         vector<Point>  Points;
@@ -40,17 +40,7 @@ class GraphicObject
         bool HasSelectedVertex() { return currentVertex >= 0; };
         void SetSelectedVertex(int index) { this->currentVertex = index; };
         Point& GetSelectedVertex();
-
-        void SetColor(float r, float g, float b)
-        { 
-            this->color.r = r;
-            this->color.g = g;
-            this->color.b = b;
-        };
-
-        void ChangeRColor();
-        void ChangeGColor();
-        void ChangeBColor();
+        void DeleteSelectedVertex();
 
         void SetSelectedChildren(int index) { this->selectedChildren = index; };
         PGraf GetSelectedChildren() { return this->selectedChildren < 0 ? NULL : this->Objects[this->selectedChildren]; };

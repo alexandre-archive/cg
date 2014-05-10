@@ -25,6 +25,7 @@ class Universe
         void   SetSelectedObj(int index) { this->currentObj = index; };
         PGraf  GetSelectedObj();
         PGraf  SelectNextObj();
+        void   DeleteSelectedObject();
         size_t ObjCount() { return this->Objects.size(); };
 };
 
