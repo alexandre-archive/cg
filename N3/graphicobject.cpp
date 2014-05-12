@@ -42,11 +42,11 @@ void GraphicObject::ChangePrimitive()
     Desenha o Gráfico e seus filhos.
     Se estiver selecionado desenhará a BBox.
 **/
-void GraphicObject::Draw()
+void GraphicObject::Draw(bool isChildren, bool isParentSelected)
 {
     glLineWidth(LineWidth);
-
     glColor3f(BackColor.r, BackColor.g, BackColor.b);
+
     glBegin(primitive);
 
     for (size_t i = 0; i < Points.size(); i++)
@@ -56,9 +56,9 @@ void GraphicObject::Draw()
 
     glEnd();
 
-    if (selected)
+    if (selected || isParentSelected)
     {
-        DrawBBox();
+        DrawBBox(isChildren, selected || isParentSelected);
     }
 
     if (currentVertex != -1)
@@ -68,14 +68,14 @@ void GraphicObject::Draw()
 
     for (size_t i = 0; i < Objects.size(); ++i)
     {
-        Objects[i]->Draw();
+        Objects[i]->Draw(true, selected || isParentSelected);
     }
 }
 
 /**
     Desenha a BBox ao redor do Gráfico.
 **/
-void GraphicObject::DrawBBox()
+void GraphicObject::DrawBBox(bool isChildren, bool isParentSelected)
 {
     glColor3f(1.0f, 0.0f, 0.0f);
     glLineWidth(1.0f);

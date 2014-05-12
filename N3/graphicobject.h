@@ -25,8 +25,8 @@ class GraphicObject
         GraphicObject();
         ~GraphicObject();
 
-        void Draw();
-        void DrawBBox();
+        void Draw(bool isChildren = false, bool isParentSelected = false);
+        void DrawBBox(bool isChildren = false, bool isParentSelected = false);
         void DrawPoint(Point p);
 
         void ChangePrimitive();
