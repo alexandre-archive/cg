@@ -86,3 +86,19 @@ void Universe::DeleteSelectedObject()
     Objects.erase(Objects.begin() + currentObj);
     SelectNone();
 }
+
+/**
+    Retorna o Grafico selecionado que será o pai dos demais.
+**/
+PGraf Universe::GetParentObj()
+{
+    for (size_t i = 0; i < ObjCount(); i++)
+    {
+        if (Objects[i]->IsSelected())
+        {
+            return Objects[i];
+        }
+    }
+
+    return NULL;
+}

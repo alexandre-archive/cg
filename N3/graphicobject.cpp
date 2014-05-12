@@ -11,6 +11,7 @@ GraphicObject::GraphicObject()
     primitive = GL_LINE_LOOP;
     selected = false;
     currentVertex = -1;
+    selectedChildren = -1;
     LineWidth = 2.0f;
     BackColor.r = 0.0f;
     BackColor.g = 0.0f;

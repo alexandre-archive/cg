@@ -299,36 +299,77 @@ void mouseClick(int button, int state, int x, int y)
             // Inserção de um ponto.
             if (isMouseDown)
             {
-                Point ps;
-                ps.x = px;
-                ps.y = py;
+                PGraf parent = universe->GetParentObj();
 
-                PGraf g = universe->GetSelectedObj();
-
-                // Não está desenhando nenhum, então é um novo gráfico.
-                if (!g)
+                if (parent)
                 {
-                    g = new GraphicObject();
-                    universe->Objects.push_back(g);
-                    universe->SetSelectedObj(universe->ObjCount() - 1);
-                    // O 1o ponto duplica-se, para desenha o rastro.
-                    g->Points.push_back(ps);
-                }
+                    Point ps;
+                    ps.x = px;
+                    ps.y = py;
 
-                g->Points.push_back(ps);
-                g->CalculateBBox();
+                    PGraf g = parent->GetSelectedChildren();
+
+                    // Não está desenhando nenhum, então é um novo gráfico.
+                    if (!g)
+                    {
+                        g = new GraphicObject();
+                        parent->Objects.push_back(g);
+                        parent->SetSelectedChildren(parent->ObjCount() - 1);
+                        // O 1o ponto duplica-se, para desenha o rastro.
+                        g->Points.push_back(ps);
+                    }
+
+                    g->Points.push_back(ps);
+                    g->CalculateBBox();
+                }
+                else
+                {
+                    Point ps;
+                    ps.x = px;
+                    ps.y = py;
+
+                    PGraf g = universe->GetSelectedObj();
+
+                    // Não está desenhando nenhum, então é um novo gráfico.
+                    if (!g)
+                    {
+                        g = new GraphicObject();
+                        universe->Objects.push_back(g);
+                        universe->SetSelectedObj(universe->ObjCount() - 1);
+                        // O 1o ponto duplica-se, para desenha o rastro.
+                        g->Points.push_back(ps);
+                    }
+
+                    g->Points.push_back(ps);
+                    g->CalculateBBox();
+                }
 
             }
             // Término de inserção de um ponto, caso tenha algum poligono.
-            else if (universe->HasSelectedObj())
+            else
             {
-                PGraf g = universe->GetSelectedObj();
-                Point& pe = g->Points.back();
+                PGraf parent = universe->GetParentObj();
 
-                pe.x = px;
-                pe.y = py;
+                if (parent) // Tem um pai selecionado. Então sera filho desse obj.
+                {
+                    PGraf g = parent->GetSelectedChildren();
+                    Point& pe = g->Points.back();
 
-                g->CalculateBBox();
+                    pe.x = px;
+                    pe.y = py;
+
+                    g->CalculateBBox();
+                }
+                else if (universe->HasSelectedObj())
+                {
+                    PGraf g = universe->GetSelectedObj();
+                    Point& pe = g->Points.back();
+
+                    pe.x = px;
+                    pe.y = py;
+
+                    g->CalculateBBox();
+                }
             }
         }
     }

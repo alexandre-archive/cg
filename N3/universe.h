@@ -27,6 +27,7 @@ class Universe
         PGraf  SelectNextObj();
         void   DeleteSelectedObject();
         size_t ObjCount() { return this->Objects.size(); };
+        PGraf GetParentObj();
 };
 
 typedef Universe* PUniverse;

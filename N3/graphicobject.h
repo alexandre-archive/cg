@@ -31,6 +31,8 @@ class GraphicObject
 
         void ChangePrimitive();
 
+        size_t ObjCount() { return this->Objects.size(); };
+
         bool IsMouseInside(int x, int y);
         int  GetSelectedVertexIndex(int x, int y);
         void CalculateBBox();
