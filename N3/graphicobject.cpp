@@ -111,8 +111,8 @@ bool GraphicObject::IsMouseInside(int x, int y)
 
     for (size_t i = 0; i < Points.size() - 1; i++)
     {
-        auto p1 = Points[i + 1];
-        auto p2 = Points[i];
+        Point p1 = Points[i + 1];
+        Point p2 = Points[i];
 
         if (p1.x == x && p1.y == y)
         {
@@ -151,8 +151,8 @@ bool GraphicObject::IsMouseInside(int x, int y)
     }
 
     // Calcula o ultimo com o primeiro.
-    auto p1 = Points[Points.size() - 1];
-    auto p2 = Points[0];
+    Point p1 = Points[Points.size() - 1];
+    Point p2 = Points[0];
 
     ti = (yint - p1.y) / (p2.y - p1.y);
 
