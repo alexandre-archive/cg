@@ -73,10 +73,12 @@ void keyPress(unsigned char key, int x, int y)
             exit(0);
         break;
         case KEY_TAB:
+            action = 0;
             isSelectionMode = !isSelectionMode;
             glutPostRedisplay();
         break;
         case KEY_DEL:
+            action = 0;
             // Deleta o ponto ou poligono se for seleção.
             // Limpa a tela se for edição.
             if (isSelectionMode)
@@ -110,6 +112,7 @@ void keyPress(unsigned char key, int x, int y)
             glutPostRedisplay();
         break;
         case KEY_SPACE:
+            action = 0;
             g = universe->GetSelectedObj();
             if (g)
             {
@@ -119,6 +122,7 @@ void keyPress(unsigned char key, int x, int y)
         break;
         case 'P':
         case 'p':
+            action = 0;
             // Seleciona um poligono.
             if (isSelectionMode && universe->ObjCount() > 0)
             {
@@ -195,6 +199,7 @@ void keyPress(unsigned char key, int x, int y)
             }
         break;
         default:
+            action = 0;
             cout << key << "\n";
         break;
     }
