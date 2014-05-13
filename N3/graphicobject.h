@@ -16,10 +16,12 @@ class GraphicContainer
 private:
     vector<PGraf> objects;
 public:
-    virtual PGraf AddObj(PGraf g);
-    virtual PGraf GetObj(int index);
+    virtual PGraf  AddObj(PGraf g);
+    virtual PGraf  GetObj(int index);
     virtual size_t ObjCount() { return this->objects.size(); };
-    virtual PGraf GetSelected();
+    virtual PGraf  GetSelectedObj();
+    virtual void   DeleteSelectedObj();
+    virtual bool   SelectObj(int x, int y);
 };
 
 /**
@@ -53,6 +55,7 @@ class GraphicObject
         void CalculateBBox();
 
         bool IsSelected() { return this->selected; };
+        void IsSelected(bool selected) { this->selected = selected; };
         void SetSelected(bool selected) { this->selected = selected; };
 
         bool HasSelectedVertex() { return currentVertex >= 0; };
@@ -71,4 +74,9 @@ class GraphicObject
 
         void SetSelectedChildren(int index) { this->selectedChildren = index; };
         PGraf GetSelectedChildren() { return this->selectedChildren < 0 ? NULL : this->Objects[this->selectedChildren]; };
+
+        bool   SelectPoint(int x, int y);
+        Point& GetSelectedPoint();
+        bool   HasSelectedPoint();
+        void   DeleteSelectedPoint();
 };

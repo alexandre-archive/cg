@@ -324,7 +324,35 @@ PGraf GraphicContainer::GetObj(int index)
     return objects[index];
 }
 
-PGraf GraphicContainer::GetSelected()
+PGraf GraphicContainer::GetSelectedObj()
 {
     return NULL;
+}
+
+void GraphicContainer::DeleteSelectedObj()
+{
+
+}
+
+bool GraphicContainer::SelectObj(int x, int y)
+{
+    for (size_t i = 0; i < ObjCount(); i++)
+    {
+        PGraf g = GetObj(i);
+
+        if (g->IsMouseInside(x, y))
+        {
+            g->IsSelected(true);
+            return true;
+        }
+        else
+        {
+            for (size_t j = 0; j < g->ObjCount(); ++j)
+            {
+                
+            }
+        }
+    }
+
+    return false;
 }
