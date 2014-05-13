@@ -8,6 +8,21 @@ class GraphicObject;
 typedef GraphicObject* PGraf;
 
 /**
+    Representa um Container Gráfico.
+    Um container é uma coleção de objetos gráficos.
+**/
+class GraphicContainer
+{
+private:
+    vector<PGraf> objects;
+public:
+    virtual PGraf AddObj(PGraf g);
+    virtual PGraf GetObj(int index);
+    virtual size_t ObjCount() { return this->objects.size(); };
+    virtual PGraf GetSelected();
+};
+
+/**
     Representa um Objeto Gráfico no Universo.
 **/
 class GraphicObject
@@ -15,11 +30,13 @@ class GraphicObject
     private:
         bool  selected;
         int   primitive, currentVertex, selectedChildren;
+        PGraf parent;
+
+        vector<PGraf>  Objects;
+        vector<Point>  Points;
     public:
         Color          BackColor;
         BBox           Bbox;
-        vector<PGraf>  Objects;
-        vector<Point>  Points;
         float          LineWidth;
 
         GraphicObject();
@@ -31,11 +48,10 @@ class GraphicObject
 
         void ChangePrimitive();
 
-        size_t ObjCount() { return this->Objects.size(); };
-
         bool IsMouseInside(int x, int y);
         int  GetSelectedVertexIndex(int x, int y);
         void CalculateBBox();
+
         bool IsSelected() { return this->selected; };
         void SetSelected(bool selected) { this->selected = selected; };
 
@@ -43,6 +59,15 @@ class GraphicObject
         void SetSelectedVertex(int index) { this->currentVertex = index; };
         Point& GetSelectedVertex();
         void DeleteSelectedVertex();
+
+        Point& AddPoint(Point p);
+        Point& GetPoint(int index);
+        Point& GetLast();
+        size_t PointCount() { return this->Points.size(); };
+
+        PGraf AddObj(PGraf g);
+        PGraf GetObj(int index);
+        size_t ObjCount() { return this->Objects.size(); };
 
         void SetSelectedChildren(int index) { this->selectedChildren = index; };
         PGraf GetSelectedChildren() { return this->selectedChildren < 0 ? NULL : this->Objects[this->selectedChildren]; };

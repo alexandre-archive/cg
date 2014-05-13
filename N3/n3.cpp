@@ -91,7 +91,7 @@ void keyPress(unsigned char key, int x, int y)
                     {
                         g->DeleteSelectedVertex();
 
-                        int size = g->Points.size();
+                        int size = g->PointCount();
 
                         if (size <= 1)
                         {
@@ -222,7 +222,7 @@ void mouseMove(int x, int y)
     }
     else
     {
-        Point& pe = g->Points.back();
+        Point& pe = g->GetLast();
         pe.x = px;
         pe.y = py;
     }
@@ -313,13 +313,13 @@ void mouseClick(int button, int state, int x, int y)
                     if (!g)
                     {
                         g = new GraphicObject();
-                        parent->Objects.push_back(g);
+                        parent->AddObj(g);
                         parent->SetSelectedChildren(parent->ObjCount() - 1);
                         // O 1o ponto duplica-se, para desenha o rastro.
-                        g->Points.push_back(ps);
+                        g->AddPoint(ps);
                     }
 
-                    g->Points.push_back(ps);
+                    g->AddPoint(ps);
                     g->CalculateBBox();
                 }
                 else
@@ -337,10 +337,10 @@ void mouseClick(int button, int state, int x, int y)
                         universe->Objects.push_back(g);
                         universe->SetSelectedObj(universe->ObjCount() - 1);
                         // O 1o ponto duplica-se, para desenha o rastro.
-                        g->Points.push_back(ps);
+                        g->AddPoint(ps);
                     }
 
-                    g->Points.push_back(ps);
+                    g->AddPoint(ps);
                     g->CalculateBBox();
                 }
 
@@ -353,7 +353,7 @@ void mouseClick(int button, int state, int x, int y)
                 if (parent) // Tem um pai selecionado. Então sera filho desse obj.
                 {
                     PGraf g = parent->GetSelectedChildren();
-                    Point& pe = g->Points.back();
+                    Point& pe = g->GetLast();
 
                     pe.x = px;
                     pe.y = py;
@@ -363,7 +363,7 @@ void mouseClick(int button, int state, int x, int y)
                 else if (universe->HasSelectedObj())
                 {
                     PGraf g = universe->GetSelectedObj();
-                    Point& pe = g->Points.back();
+                    Point& pe = g->GetLast();
 
                     pe.x = px;
                     pe.y = py;

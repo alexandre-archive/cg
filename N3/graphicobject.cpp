@@ -254,3 +254,77 @@ void GraphicObject::DeleteSelectedVertex()
     Points.erase(Points.begin() + currentVertex);
     currentVertex = -1;
 }
+
+Point& GraphicObject::AddPoint(Point p)
+{
+    Points.push_back(p);
+    return p;
+}
+
+Point& GraphicObject::GetPoint(int index)
+{
+    if (index < 0 || index >= (int)PointCount())
+    {
+        //return NULL;
+    }
+
+    return Points[index];
+}
+
+Point& GraphicObject::GetLast()
+{
+    return Points.back();
+/*
+    size_t index = PointCount();
+
+    if (index == 0)
+    {
+        //return NULL:
+    }
+
+    return Points[index - 1];*/
+}
+
+PGraf GraphicObject::AddObj(PGraf g)
+{
+    g->parent = this;
+    Objects.push_back(g);
+
+    return g;
+}
+
+PGraf GraphicObject::GetObj(int index)
+{
+    if (index < 0 || index >= (int)ObjCount())
+    {
+        return NULL;
+    }
+
+    return Objects[index];
+}
+
+//
+// GraphicContainer implementation
+//
+
+PGraf GraphicContainer::AddObj(PGraf g)
+{
+    objects.push_back(g);
+
+    return g;
+}
+
+PGraf GraphicContainer::GetObj(int index)
+{
+    if (index < 0 || index >= (int)ObjCount())
+    {
+        return NULL;
+    }
+
+    return objects[index];
+}
+
+PGraf GraphicContainer::GetSelected()
+{
+    return NULL;
+}
