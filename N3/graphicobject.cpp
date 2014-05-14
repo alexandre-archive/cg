@@ -43,7 +43,7 @@ void GraphicObject::Draw()
 
     for (size_t i = 0; i < PointCount(); i++)
     {
-        glVertex2f(GetPoint(i).x, GetPoint(i).y);
+        glVertex2f(GetPoint(i)->x, GetPoint(i)->y);
     }
 
     glEnd();
@@ -55,7 +55,7 @@ void GraphicObject::Draw()
 
     if (HasSelectedPoint())
     {
-        DrawPoint(GetSelectedPoint());
+        DrawPoint(*GetSelectedPoint());
     }
 
     for (size_t i = 0; i < ObjCount(); ++i)
@@ -96,24 +96,24 @@ bool GraphicObject::IsSelectable(int x, int y)
 
     for (size_t i = 0; i < size - 1; i++)
     {
-        Point p1 = GetPoint(i + 1);
-        Point p2 = GetPoint(i);
+        PPoint p1 = GetPoint(i + 1);
+        PPoint p2 = GetPoint(i);
 
-        if (p1.x == x && p1.y == y)
+        if (p1->x == x && p1->y == y)
         {
             return true;
         }
 
         ti = 0;
 
-        if ((p2.y - p1.y) != 0)
+        if ((p2->y - p1->y) != 0)
         {
-            ti = (yint - p1.y) / (p2.y - p1.y);
+            ti = (yint - p1->y) / (p2->y - p1->y);
         }
 
         if (ti > 0 && ti < 1)
         {
-            xint = p1.x + (p2.x - p1.x) * ti;
+            xint = p1->x + (p2->x - p1->x) * ti;
 
             // HACK: Se possuir apenas 2 pontos é
             // impossível selecioná-los. Adiciona uma margem de erro.
@@ -136,14 +136,14 @@ bool GraphicObject::IsSelectable(int x, int y)
     }
 
     // Calcula o ultimo com o primeiro.
-    Point p1 = GetPoint(size - 1);
-    Point p2 = GetPoint(0);
+    PPoint p1 = GetPoint(size - 1);
+    PPoint p2 = GetPoint(0);
 
-    ti = (yint - p1.y) / (p2.y - p1.y);
+    ti = (yint - p1->y) / (p2->y - p1->y);
 
     if (ti > 0 && ti < 1)
     {
-        xint = p1.x + (p2.x - p1.x) * ti;
+        xint = p1->x + (p2->x - p1->x) * ti;
 
         if (xint > x)
         {
@@ -196,19 +196,19 @@ void GraphicObject::AddPoint(Point p)
     CalculateBBox();
 }
 
-Point& GraphicObject::GetPoint(int index)
+PPoint GraphicObject::GetPoint(int index)
 {
     if (index < 0 || index >= (int)PointCount())
     {
-        //return NULL;
+        return NULL;
     }
 
-    return points[index];
+    return &points[index];
 }
 
-Point& GraphicObject::GetLastPoint()
+PPoint GraphicObject::GetLastPoint()
 {
-    return points.back();
+    return &points.back();
 }
 
 bool GraphicObject::IsPointSelectable(int x, int y)
@@ -239,26 +239,28 @@ bool GraphicObject::IsPointSelectable(int x, int y)
     return false;
 }
 
-Point& GraphicObject::GetSelectedPoint()
+PPoint GraphicObject::GetSelectedPoint()
 {
     for (size_t i = 0; i < PointCount(); i++)
     {
-        Point p = GetPoint(i);
+        PPoint p = GetPoint(i);
 
-        if (p.is_selected)
+        if (p->is_selected)
         {
             return p;
         }
     }
+
+    return NULL;
 }
 
 bool GraphicObject::HasSelectedPoint()
 {
     for (size_t i = 0; i < PointCount(); i++)
     {
-        Point p = GetPoint(i);
+        PPoint p = GetPoint(i);
 
-        if (p.is_selected)
+        if (p->is_selected)
         {
             return true;
         }
@@ -293,6 +295,24 @@ PGraf GraphicContainer::GetObj(int index)
 
 PGraf GraphicContainer::GetSelectedObj()
 {
+    for (size_t i = 0; i < ObjCount(); i++)
+    {
+        PGraf g = GetObj(i);
+
+        if (g->IsSelected)
+        {
+            return g;
+        }
+        else
+        {
+            PGraf g2 = g->GetSelectedObj();
+            if (g2)
+            {
+                return g2;
+            }
+        }
+    }
+
     return NULL;
 }
 
@@ -336,9 +356,10 @@ void GraphicContainer::SelectNone()
 
         for (size_t j = 0; j < g->PointCount(); j++)
         {
-            g->GetPoint(j).is_selected = false;
+            g->GetPoint(j)->is_selected = false;
         }
 
         g->SelectNone();
+        g->CalculateBBox();
     }
 }

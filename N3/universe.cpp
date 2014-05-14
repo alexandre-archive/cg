@@ -31,7 +31,7 @@ Point& Universe::GetSelectedPoint()
 
 bool Universe::HasSelectedPoint()
 {
-
+    return false;
 }
 
 void Universe::DeleteSelectedPoint()

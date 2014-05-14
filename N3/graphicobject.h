@@ -78,8 +78,9 @@ public:
 
     GraphicObject();
     ~GraphicObject();
+
     /**
-        Calcula a nova posição da BBox.
+    Calcula a nova posição da BBox.
     **/
     void CalculateBBox();
     /**
@@ -102,15 +103,15 @@ public:
     bool   IsSelectable(int x, int y);
 
     void   AddPoint(Point p);
-    Point& GetPoint(int index);
-    Point& GetLastPoint();
+    PPoint GetPoint(int index);
+    PPoint GetLastPoint();
     size_t PointCount() { return this->points.size(); };
     /**
         Se X e Y corresponderem a um vértice, retorna a posição deste vértice.
         Caso contrário retornará -1;
     **/
     bool   IsPointSelectable(int x, int y);
-    Point& GetSelectedPoint();
+    PPoint GetSelectedPoint();
     bool   HasSelectedPoint();
     void   DeleteSelectedPoint();
 };

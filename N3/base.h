@@ -26,6 +26,8 @@ struct Point
     float x = 0, y = 0;
 };
 
+typedef Point* PPoint;
+
 struct Color
 {
     float r, g, b, a;

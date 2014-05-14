@@ -218,9 +218,9 @@ void mouseMove(int x, int y)
     {
         if (currentObj)
         {
-            Point& pe = currentObj->GetLastPoint();
-            pe.x = px;
-            pe.y = py;
+            PPoint pe = currentObj->GetLastPoint();
+            pe->x = px;
+            pe->y = py;
         }
     }
 
