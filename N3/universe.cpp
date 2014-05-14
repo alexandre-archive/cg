@@ -6,7 +6,6 @@
 
 Universe::Universe()
 {
-    currentObj = -1;
 }
 
 Universe::~Universe()
@@ -21,84 +20,21 @@ void Universe::Draw()
 {
     for (size_t i = 0; i < ObjCount(); i++)
     {
-        Objects[i]->Draw();
+        GetObj(i)->Draw();
     }
 }
 
-/**
-    Remove a seleção de todos os objetos filhos.
-**/
-void Universe::SelectNone()
+Point& Universe::GetSelectedPoint()
 {
-    currentObj = -1;
 
-    // Remove a seleção de todos. Caso contrário ficara com a BBox.
-    for (size_t i = 0; i < ObjCount(); i++)
-    {
-        Objects[i]->SetSelected(false);
-    }
-
-    // Remove o ponto dos vertices.
-    for (size_t i = 0; i < ObjCount(); ++i)
-    {
-        Objects[i]->SetSelectedVertex(-1);
-    }
 }
 
-/**
-    Seleciona um poligono. Se possuir um selecionado, troca por outro.
-    @return Retorna o poligono selecionado ou NULL.
-**/
-PGraf Universe::SelectNextObj()
+bool Universe::HasSelectedPoint()
 {
-    currentObj++;
 
-    if (currentObj >= (int) ObjCount())
-    {
-        currentObj = -1;
-        return NULL;
-    }
-
-    return Objects[currentObj];
 }
 
-/**
-    Retorna o poligono selecionado ou NULL.
-    @return Um poligono.
-**/
-PGraf Universe::GetSelectedObj()
+void Universe::DeleteSelectedPoint()
 {
-    if (currentObj == -1)
-    {
-        return NULL;
-    }
 
-    return Objects[currentObj];
-}
-
-void Universe::DeleteSelectedObject()
-{
-    if (currentObj < 0)
-    {
-        return;
-    }
-
-    Objects.erase(Objects.begin() + currentObj);
-    SelectNone();
-}
-
-/**
-    Retorna o Grafico selecionado que será o pai dos demais.
-**/
-PGraf Universe::GetParentObj()
-{
-    for (size_t i = 0; i < ObjCount(); i++)
-    {
-        if (Objects[i]->IsSelected())
-        {
-            return Objects[i];
-        }
-    }
-
-    return NULL;
 }

@@ -11,23 +11,17 @@
 /**
     Representa o Mundo e contém todos os Objetos Gráficos.
 **/
-class Universe
+class Universe : public GraphicContainer
 {
-    private:
-        int currentObj;
     public:
-        vector<PGraf> Objects;
         Universe();
         ~Universe();
-        void   Draw();
-        void   SelectNone();
-        bool   HasSelectedObj() { return currentObj >= 0; };
-        void   SetSelectedObj(int index) { this->currentObj = index; };
-        PGraf  GetSelectedObj();
-        PGraf  SelectNextObj();
-        void   DeleteSelectedObject();
-        size_t ObjCount() { return this->Objects.size(); };
-        PGraf GetParentObj();
+        void Draw();
+        void Clear() { this->objects.clear(); };
+
+        Point& GetSelectedPoint();
+        bool   HasSelectedPoint();
+        void   DeleteSelectedPoint();
 };
 
 typedef Universe* PUniverse;

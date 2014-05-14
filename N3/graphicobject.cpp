@@ -3,15 +3,14 @@
     #include "graphicobject.h"
 #endif
 
-/**
-    Cria um novo gŕafico.
-**/
+//
+// GraphicObject implementations
+//
+
 GraphicObject::GraphicObject()
 {
     primitive = GL_LINE_LOOP;
-    selected = false;
-    currentVertex = -1;
-    selectedChildren = -1;
+    IsSelected = false;
     LineWidth = 2.0f;
     BackColor.r = 0.0f;
     BackColor.g = 0.0f;
@@ -23,9 +22,6 @@ GraphicObject::~GraphicObject()
 
 }
 
-/**
-    Altera a primitiva atual entre GL_LINE_LOOP ou GL_LINE_STRIP.
-**/
 void GraphicObject::ChangePrimitive()
 {
     if (primitive == GL_LINE_LOOP)
@@ -38,54 +34,43 @@ void GraphicObject::ChangePrimitive()
     }
 }
 
-/**
-    Desenha o Gráfico e seus filhos.
-    Se estiver selecionado desenhará a BBox.
-**/
-void GraphicObject::Draw(bool isChildren, bool isParentSelected)
+void GraphicObject::Draw()
 {
     glLineWidth(LineWidth);
     glColor3f(BackColor.r, BackColor.g, BackColor.b);
 
     glBegin(primitive);
 
-    for (size_t i = 0; i < Points.size(); i++)
+    for (size_t i = 0; i < PointCount(); i++)
     {
-        glVertex2f(Points[i].x, Points[i].y);
+        glVertex2f(GetPoint(i).x, GetPoint(i).y);
     }
 
     glEnd();
 
-    if (selected || isParentSelected)
+    if (IsSelected)
     {
-        DrawBBox(isChildren, selected || isParentSelected);
+        DrawBBox();
     }
 
-    if (currentVertex != -1)
+    if (HasSelectedPoint())
     {
-        DrawPoint(Points[currentVertex]);
+        DrawPoint(GetSelectedPoint());
     }
 
-    for (size_t i = 0; i < Objects.size(); ++i)
+    for (size_t i = 0; i < ObjCount(); ++i)
     {
-        Objects[i]->Draw(true, selected || isParentSelected);
+        GetObj(i)->Draw();
     }
 }
 
-/**
-    Desenha a BBox ao redor do Gráfico.
-**/
-void GraphicObject::DrawBBox(bool isChildren, bool isParentSelected)
+void GraphicObject::DrawBBox()
 {
     glColor3f(1.0f, 0.0f, 0.0f);
     glLineWidth(1.0f);
-    DrawRectangle(Bbox.minX, Bbox.maxX, Bbox.minY, Bbox.maxY);
+    DrawRectangle(bbox.minX, bbox.maxX, bbox.minY, bbox.maxY);
 }
 
-/**
-    Desenha um ponto no local do vértice selecionado.
-    Facilitando a identificação.
-**/
 void GraphicObject::DrawPoint(Point p)
 {
     glPointSize(4.0f);
@@ -95,12 +80,11 @@ void GraphicObject::DrawPoint(Point p)
     glEnd();
 }
 
-/**
-    Verifica se o mouse entra dentro do Gráfico.
-**/
-bool GraphicObject::IsMouseInside(int x, int y)
+bool GraphicObject::IsSelectable(int x, int y)
 {
-    if (Points.size() < 2)
+    size_t size = PointCount();
+
+    if (size < 2)
     {
         return false;
     }
@@ -110,10 +94,10 @@ bool GraphicObject::IsMouseInside(int x, int y)
     float yint = y;
     float xint = 0;
 
-    for (size_t i = 0; i < Points.size() - 1; i++)
+    for (size_t i = 0; i < size - 1; i++)
     {
-        Point p1 = Points[i + 1];
-        Point p2 = Points[i];
+        Point p1 = GetPoint(i + 1);
+        Point p2 = GetPoint(i);
 
         if (p1.x == x && p1.y == y)
         {
@@ -133,7 +117,7 @@ bool GraphicObject::IsMouseInside(int x, int y)
 
             // HACK: Se possuir apenas 2 pontos é
             // impossível selecioná-los. Adiciona uma margem de erro.
-            if (Points.size() == 2)
+            if (size == 2)
             {
                 // TODO: Distancia euclidiana?
                 if ((xint + 8) > x || (xint - 8) > x)
@@ -152,8 +136,8 @@ bool GraphicObject::IsMouseInside(int x, int y)
     }
 
     // Calcula o ultimo com o primeiro.
-    Point p1 = Points[Points.size() - 1];
-    Point p2 = Points[0];
+    Point p1 = GetPoint(size - 1);
+    Point p2 = GetPoint(0);
 
     ti = (yint - p1.y) / (p2.y - p1.y);
 
@@ -170,36 +154,33 @@ bool GraphicObject::IsMouseInside(int x, int y)
     return count % 2 != 0;
 }
 
-/**
-    Calcula a nova posição da BBox.
-**/
 void GraphicObject::CalculateBBox()
 {
-    Bbox.minX = Points[0].x;
-    Bbox.maxX = Points[0].x;
-    Bbox.minY = Points[0].y;
-    Bbox.maxY = Points[0].y;
+    bbox.minX = points[0].x;
+    bbox.maxX = points[0].x;
+    bbox.minY = points[0].y;
+    bbox.maxY = points[0].y;
 
-    for (size_t i = 1; i < Points.size(); i++)
+    for (size_t i = 1; i < points.size(); i++)
     {
-        if (Points[i].x < Bbox.minX)
+        if (points[i].x < bbox.minX)
         {
-            Bbox.minX = Points[i].x;
+            bbox.minX = points[i].x;
         }
 
-        if (Points[i].y < Bbox.minY)
+        if (points[i].y < bbox.minY)
         {
-            Bbox.minY = Points[i].y;
+            bbox.minY = points[i].y;
         }
 
-        if (Points[i].x > Bbox.maxX)
+        if (points[i].x > bbox.maxX)
         {
-            Bbox.maxX = Points[i].x;
+            bbox.maxX = points[i].x;
         }
 
-        if (Points[i].y > Bbox.maxY)
+        if (points[i].y > bbox.maxY)
         {
-            Bbox.maxY = Points[i].y;
+            bbox.maxY = points[i].y;
         }
     }
 }
@@ -209,56 +190,10 @@ bool InRange(int value, int nominal, int precision)
     return value < (nominal + precision) && value > (nominal - precision);
 }
 
-/**
-    Se X e Y corresponderem a um vértice, retorna a posição deste vértice.
-    Caso contrário retornará -1;
-**/
-int GraphicObject::GetSelectedVertexIndex(int x, int y)
+void GraphicObject::AddPoint(Point p)
 {
-    int nearPointPos = -1;
-
-    for (size_t i = 0; i < Points.size(); i++)
-    {
-        // TODO: Usar distancia euclidiana para calcular.
-        if (Points[i].x == x && Points[i].y == y)
-        {
-            return i;
-        }
-
-        if (InRange(x, Points[i].x, 12) && InRange(y, Points[i].y, 12))
-        {
-            nearPointPos = i;
-        }
-    }
-
-    return nearPointPos;
-}
-
-Point& GraphicObject::GetSelectedVertex()
-{
-    if (currentVertex == -1)
-    {
-        //return pt;
-    }
-
-    return Points[currentVertex];
-}
-
-void GraphicObject::DeleteSelectedVertex()
-{
-    if (currentVertex < 0)
-    {
-        return;
-    }
-
-    Points.erase(Points.begin() + currentVertex);
-    currentVertex = -1;
-}
-
-Point& GraphicObject::AddPoint(Point p)
-{
-    Points.push_back(p);
-    return p;
+    points.push_back(p);
+    CalculateBBox();
 }
 
 Point& GraphicObject::GetPoint(int index)
@@ -268,50 +203,82 @@ Point& GraphicObject::GetPoint(int index)
         //return NULL;
     }
 
-    return Points[index];
+    return points[index];
 }
 
-Point& GraphicObject::GetLast()
+Point& GraphicObject::GetLastPoint()
 {
-    return Points.back();
-/*
-    size_t index = PointCount();
+    return points.back();
+}
 
-    if (index == 0)
+bool GraphicObject::IsPointSelectable(int x, int y)
+{
+    int nearPointPos = -1;
+
+    for (size_t i = 0; i < points.size(); i++)
     {
-        //return NULL:
+        // TODO: Usar distancia euclidiana para calcular.
+        if (points[i].x == x && points[i].y == y)
+        {
+            points[i].is_selected = true;
+            return true;
+        }
+
+        if (InRange(x, points[i].x, 12) && InRange(y, points[i].y, 12))
+        {
+            nearPointPos = i;
+        }
     }
 
-    return Points[index - 1];*/
-}
-
-PGraf GraphicObject::AddObj(PGraf g)
-{
-    g->parent = this;
-    Objects.push_back(g);
-
-    return g;
-}
-
-PGraf GraphicObject::GetObj(int index)
-{
-    if (index < 0 || index >= (int)ObjCount())
+    if(nearPointPos != -1)
     {
-        return NULL;
+        points[nearPointPos].is_selected = true;
+        return true;
     }
 
-    return Objects[index];
+    return false;
+}
+
+Point& GraphicObject::GetSelectedPoint()
+{
+    for (size_t i = 0; i < PointCount(); i++)
+    {
+        Point p = GetPoint(i);
+
+        if (p.is_selected)
+        {
+            return p;
+        }
+    }
+}
+
+bool GraphicObject::HasSelectedPoint()
+{
+    for (size_t i = 0; i < PointCount(); i++)
+    {
+        Point p = GetPoint(i);
+
+        if (p.is_selected)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+void GraphicObject::DeleteSelectedPoint()
+{
+
 }
 
 //
 // GraphicContainer implementation
 //
 
-PGraf GraphicContainer::AddObj(PGraf g)
+void GraphicContainer::AddObj(PGraf g)
 {
     objects.push_back(g);
-
-    return g;
 }
 
 PGraf GraphicContainer::GetObj(int index)
@@ -340,19 +307,38 @@ bool GraphicContainer::SelectObj(int x, int y)
     {
         PGraf g = GetObj(i);
 
-        if (g->IsMouseInside(x, y))
+        if (g->IsSelectable(x, y))
         {
-            g->IsSelected(true);
+            g->IsSelected = true;
             return true;
         }
         else
         {
             for (size_t j = 0; j < g->ObjCount(); ++j)
             {
-                
+                if (g->SelectObj(x, y))
+                {
+                    return true;
+                }
             }
         }
     }
 
     return false;
+}
+
+void GraphicContainer::SelectNone()
+{
+    for (size_t i = 0; i < ObjCount(); i++)
+    {
+        PGraf g = GetObj(i);
+        g->IsSelected = false;
+
+        for (size_t j = 0; j < g->PointCount(); j++)
+        {
+            g->GetPoint(j).is_selected = false;
+        }
+
+        g->SelectNone();
+    }
 }

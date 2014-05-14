@@ -8,11 +8,13 @@
 
 #define KEY_TAB 9
 #define KEY_ESC 27
-#define KEY_DEL 127
 #define KEY_SPACE 32
+#define KEY_DEL 127
+
 #define CHANGE_COLOR_R 1
 #define CHANGE_COLOR_G 2
 #define CHANGE_COLOR_B 3
+
 #define CHANGE_LINE_WIDTH 4
 
 GLint width  = 400,
@@ -24,11 +26,12 @@ GLfloat ortho2D_minX = -400.0f,
         ortho2D_maxY =  400.0f;
 
 bool isSelectionMode = false,
-     isSelectFromSelectionMode = false;
+     isMouseDown = false;
 
 PUniverse universe;
 
-bool isMouseDown = false;
+PGraf currentObj;
+
 int action = 0;
 
 void resize(int width, int height)
@@ -87,27 +90,27 @@ void keyPress(unsigned char key, int x, int y)
 
                 if (g)
                 {
-                    if (g->HasSelectedVertex())
+                    if (g->HasSelectedPoint())
                     {
-                        g->DeleteSelectedVertex();
+                        g->DeleteSelectedPoint();
 
                         int size = g->PointCount();
 
                         if (size <= 1)
                         {
-                            universe->DeleteSelectedObject();
+                            universe->DeleteSelectedObj();
                         }
                     }
                     else
                     {
-                        universe->DeleteSelectedObject();
+                        universe->DeleteSelectedObj();
                     }
                 }
             }
             else
             {
                 universe->SelectNone();
-                universe->Objects.clear();
+                universe->Clear();
             }
             glutPostRedisplay();
         break;
@@ -117,16 +120,6 @@ void keyPress(unsigned char key, int x, int y)
             if (g)
             {
                 g->ChangePrimitive();
-                glutPostRedisplay();
-            }
-        break;
-        case 'P':
-        case 'p':
-            action = 0;
-            // Seleciona um poligono.
-            if (isSelectionMode && universe->ObjCount() > 0)
-            {
-                universe->SelectNextObj();
                 glutPostRedisplay();
             }
         break;
@@ -207,27 +200,29 @@ void keyPress(unsigned char key, int x, int y)
 
 void mouseMove(int x, int y)
 {
-    if (!isMouseDown || !universe->HasSelectedObj() || universe->GetSelectedObj()->IsSelected()) return;
+    if (!isMouseDown) return;
 
     int px = convertXSpace(x, width);
     int py = convertYSpace(y, height);
 
-    PGraf g = universe->GetSelectedObj();
-
-    if (g->HasSelectedVertex())
+    if (isSelectionMode)
     {
-        Point& pe = g->GetSelectedVertex();
-        pe.x = px;
-        pe.y = py;
+        if (universe->HasSelectedPoint())
+        {
+            Point& pe = universe->GetSelectedPoint();
+            pe.x = px;
+            pe.y = py;
+        }
     }
     else
     {
-        Point& pe = g->GetLast();
-        pe.x = px;
-        pe.y = py;
+        if (currentObj)
+        {
+            Point& pe = currentObj->GetLastPoint();
+            pe.x = px;
+            pe.y = py;
+        }
     }
-
-    g->CalculateBBox();
 
     glutPostRedisplay();
 }
@@ -242,7 +237,7 @@ void mouseClick(int button, int state, int x, int y)
     if (button == GLUT_RIGHT_BUTTON)
     {
         universe->SelectNone();
-        //universe->SetSelectedObj(-1);
+        currentObj = NULL;
     }
     else if (button == GLUT_LEFT_BUTTON)
     {
@@ -254,43 +249,25 @@ void mouseClick(int button, int state, int x, int y)
             if (isMouseDown)
             {
                 universe->SelectNone();
+                currentObj = NULL;
+
+                bool hasPoint = false;
 
                 // Verifica se selecionou um ponto (vértice).
                 for (size_t i = 0; i < universe->ObjCount(); ++i)
                 {
-                    PGraf g = universe->Objects[i];
+                    hasPoint = universe->GetObj(i)->IsPointSelectable(px, py);
 
-                    int point = g->GetSelectedVertexIndex(px, py);
-
-                    if (point != -1)
+                    if (hasPoint)
                     {
-                        universe->SetSelectedObj(i);
-                        g->SetSelectedVertex(point);
-                    }
-                    else
-                    {
-                        g->SetSelectedVertex(-1);
+                        break;
                     }
                 }
 
                 // Não selecionou nenhum ponto, verifica se selecionou um objeto então.
-                if (!universe->HasSelectedObj())
+                if (!hasPoint)
                 {
-                    // Verifica se está dentro de um poligono. (Selecionou um com o mouse).
-                    for (size_t i = 0; i < universe->ObjCount(); ++i)
-                    {
-                        PGraf g = universe->Objects[i];
-
-                        if (g->IsMouseInside(px, py))
-                        {
-                            g->SetSelected(true);
-                            universe->SetSelectedObj(i);
-                        }
-                        else
-                        {
-                            g->SetSelected(false);
-                        }
-                    }
+                    universe->SelectObj(px, py);
                 }
             }
         }
@@ -299,77 +276,31 @@ void mouseClick(int button, int state, int x, int y)
             // Inserção de um ponto.
             if (isMouseDown)
             {
-                PGraf parent = universe->GetParentObj();
+                Point ps;
+                ps.x = px;
+                ps.y = py;
+
+                PGraf parent = universe->GetSelectedObj();
+
+                // Não está desenhando nenhum, então é um novo gráfico.
+                if (!currentObj)
+                {
+                    currentObj = new GraphicObject();
+                    // O 1o ponto duplica-se, para desenha o rastro.
+                    currentObj->AddPoint(ps);
+                }
 
                 if (parent)
                 {
-                    Point ps;
-                    ps.x = px;
-                    ps.y = py;
-
-                    PGraf g = parent->GetSelectedChildren();
-
-                    // Não está desenhando nenhum, então é um novo gráfico.
-                    if (!g)
-                    {
-                        g = new GraphicObject();
-                        parent->AddObj(g);
-                        parent->SetSelectedChildren(parent->ObjCount() - 1);
-                        // O 1o ponto duplica-se, para desenha o rastro.
-                        g->AddPoint(ps);
-                    }
-
-                    g->AddPoint(ps);
-                    g->CalculateBBox();
+                    cout << "é filho\n";
+                    parent->AddObj(currentObj);
                 }
                 else
                 {
-                    Point ps;
-                    ps.x = px;
-                    ps.y = py;
-
-                    PGraf g = universe->GetSelectedObj();
-
-                    // Não está desenhando nenhum, então é um novo gráfico.
-                    if (!g)
-                    {
-                        g = new GraphicObject();
-                        universe->Objects.push_back(g);
-                        universe->SetSelectedObj(universe->ObjCount() - 1);
-                        // O 1o ponto duplica-se, para desenha o rastro.
-                        g->AddPoint(ps);
-                    }
-
-                    g->AddPoint(ps);
-                    g->CalculateBBox();
+                    universe->AddObj(currentObj);
                 }
 
-            }
-            // Término de inserção de um ponto, caso tenha algum poligono.
-            else
-            {
-                PGraf parent = universe->GetParentObj();
-
-                if (parent) // Tem um pai selecionado. Então sera filho desse obj.
-                {
-                    PGraf g = parent->GetSelectedChildren();
-                    Point& pe = g->GetLast();
-
-                    pe.x = px;
-                    pe.y = py;
-
-                    g->CalculateBBox();
-                }
-                else if (universe->HasSelectedObj())
-                {
-                    PGraf g = universe->GetSelectedObj();
-                    Point& pe = g->GetLast();
-
-                    pe.x = px;
-                    pe.y = py;
-
-                    g->CalculateBBox();
-                }
+                currentObj->AddPoint(ps);
             }
         }
     }

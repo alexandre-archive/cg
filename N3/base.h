@@ -22,17 +22,8 @@ using namespace std;
 
 struct Point
 {
+    bool is_selected = false;
     float x = 0, y = 0;
-};
-
-struct Point3D
-{
-    float z = 0;
-};
-
-struct Point4D : Point3D
-{
-    float w = 1;
 };
 
 struct Color

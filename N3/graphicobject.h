@@ -13,70 +13,104 @@ typedef GraphicObject* PGraf;
 **/
 class GraphicContainer
 {
-private:
+protected:
     vector<PGraf> objects;
 public:
-    virtual PGraf  AddObj(PGraf g);
+    /** 
+        Adiciona um objeto gráfico.
+        @param g objeto gŕafico.
+    **/
+    virtual void  AddObj(PGraf g);
+    /**
+        Procura um objeto pelo indece.
+        @param index Indece.
+        @return um objeto gráfico ou NULL.
+    **/
     virtual PGraf  GetObj(int index);
-    virtual size_t ObjCount() { return this->objects.size(); };
+    /**
+        @return Total de objetos gráficos.
+    **/
+    size_t ObjCount() { return this->objects.size(); };
+    /**
+        Retorna o objeto gráfico selecionado pelo mode de seleção.
+        @return Objeto gráfico.
+    **/
     virtual PGraf  GetSelectedObj();
+    /**
+        Deleta o objeto gráfico selecionado.
+    **/
     virtual void   DeleteSelectedObj();
+    /**
+        Seleciona um objeto gráfico.
+        @param x Posição X do mouse.
+        @param y Posição Y do mouse.
+        @return true se selecionou o objeto.
+    **/
     virtual bool   SelectObj(int x, int y);
+    /**
+        Remove a seleção de todos os objetos ou pontos.
+    **/
+    virtual void   SelectNone();
 };
 
 /**
     Representa um Objeto Gráfico no Universo.
 **/
-class GraphicObject
+class GraphicObject : public GraphicContainer
 {
-    private:
-        bool  selected;
-        int   primitive, currentVertex, selectedChildren;
-        PGraf parent;
+private:
+    int            primitive;
+    vector<Point>  points;
+    BBox           bbox;
+    /**
+        Desenha um ponto no local do vértice selecionado.
+        Facilitando a identificação.
+    **/
+    void DrawPoint(Point p);
+    /**
+        Desenha a BBox ao redor do Gráfico.
+    **/
+    void DrawBBox();
+public:
+    bool   IsSelected;
+    Color  BackColor;
+    float  LineWidth;
 
-        vector<PGraf>  Objects;
-        vector<Point>  Points;
-    public:
-        Color          BackColor;
-        BBox           Bbox;
-        float          LineWidth;
+    GraphicObject();
+    ~GraphicObject();
+    /**
+        Calcula a nova posição da BBox.
+    **/
+    void CalculateBBox();
+    /**
+        Altera a primitiva atual entre
+        GL_LINE_LOOP ou GL_LINE_STRIP.
+    **/
+    void   ChangePrimitive();
+    /**
+        Desenha o Gráfico e seus filhos.
+        Se estiver selecionado desenhará a BBox.
+    **/
+    void   Draw();
+    /**
+        Verifica se o gráfico é selecionável
+        de acordo com a posição X e Y.
 
-        GraphicObject();
-        ~GraphicObject();
+        @param x Posição X do mouse.
+        @param y Posição Y do mouse.
+    **/
+    bool   IsSelectable(int x, int y);
 
-        void Draw(bool isChildren = false, bool isParentSelected = false);
-        void DrawBBox(bool isChildren = false, bool isParentSelected = false);
-        void DrawPoint(Point p);
-
-        void ChangePrimitive();
-
-        bool IsMouseInside(int x, int y);
-        int  GetSelectedVertexIndex(int x, int y);
-        void CalculateBBox();
-
-        bool IsSelected() { return this->selected; };
-        void IsSelected(bool selected) { this->selected = selected; };
-        void SetSelected(bool selected) { this->selected = selected; };
-
-        bool HasSelectedVertex() { return currentVertex >= 0; };
-        void SetSelectedVertex(int index) { this->currentVertex = index; };
-        Point& GetSelectedVertex();
-        void DeleteSelectedVertex();
-
-        Point& AddPoint(Point p);
-        Point& GetPoint(int index);
-        Point& GetLast();
-        size_t PointCount() { return this->Points.size(); };
-
-        PGraf AddObj(PGraf g);
-        PGraf GetObj(int index);
-        size_t ObjCount() { return this->Objects.size(); };
-
-        void SetSelectedChildren(int index) { this->selectedChildren = index; };
-        PGraf GetSelectedChildren() { return this->selectedChildren < 0 ? NULL : this->Objects[this->selectedChildren]; };
-
-        bool   SelectPoint(int x, int y);
-        Point& GetSelectedPoint();
-        bool   HasSelectedPoint();
-        void   DeleteSelectedPoint();
+    void   AddPoint(Point p);
+    Point& GetPoint(int index);
+    Point& GetLastPoint();
+    size_t PointCount() { return this->points.size(); };
+    /**
+        Se X e Y corresponderem a um vértice, retorna a posição deste vértice.
+        Caso contrário retornará -1;
+    **/
+    bool   IsPointSelectable(int x, int y);
+    Point& GetSelectedPoint();
+    bool   HasSelectedPoint();
+    void   DeleteSelectedPoint();
 };
