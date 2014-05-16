@@ -209,9 +209,9 @@ void mouseMove(int x, int y)
     {
         if (universe->HasSelectedPoint())
         {
-            Point& pe = universe->GetSelectedPoint();
-            pe.x = px;
-            pe.y = py;
+            PPoint pe = universe->GetSelectedPoint();
+            pe->x = px;
+            pe->y = py;
         }
     }
     else
@@ -292,7 +292,6 @@ void mouseClick(int button, int state, int x, int y)
 
                 if (parent)
                 {
-                    cout << "é filho\n";
                     parent->AddObj(currentObj);
                 }
                 else

@@ -24,13 +24,29 @@ void Universe::Draw()
     }
 }
 
-Point& Universe::GetSelectedPoint()
+PPoint Universe::GetSelectedPoint()
 {
+    for (size_t i = 0; i < ObjCount(); i++)
+    {
+        if (GetObj(i)->HasSelectedPoint())
+        {
+            return GetObj(i)->GetSelectedPoint();
+        }
+    }
 
+    return NULL;
 }
 
 bool Universe::HasSelectedPoint()
 {
+    for (size_t i = 0; i < ObjCount(); i++)
+    {
+        if (GetObj(i)->HasSelectedPoint())
+        {
+            return true;
+        }
+    }
+
     return false;
 }
 
