@@ -58,7 +58,7 @@ public:
 **/
 class GraphicObject : public GraphicContainer
 {
-private:
+protected:
     int            primitive;
     vector<Point>  points;
     BBox           bbox;

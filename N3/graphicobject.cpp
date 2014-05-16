@@ -236,6 +236,14 @@ bool GraphicObject::IsPointSelectable(int x, int y)
         return true;
     }
 
+    for (size_t j = 0; j < ObjCount(); j++)
+    {
+        if (GetObj(j)->IsPointSelectable(x, y))
+        {
+            return true;
+        }
+    }
+
     return false;
 }
 
@@ -246,6 +254,16 @@ PPoint GraphicObject::GetSelectedPoint()
         PPoint p = GetPoint(i);
 
         if (p->is_selected)
+        {
+            return p;
+        }
+    }
+
+    for (size_t j = 0; j < ObjCount(); j++)
+    {
+        PPoint p = GetObj(j)->GetSelectedPoint();
+
+        if (p)
         {
             return p;
         }
@@ -266,12 +284,33 @@ bool GraphicObject::HasSelectedPoint()
         }
     }
 
+    for (size_t j = 0; j < ObjCount(); j++)
+    {
+        if (GetObj(j)->HasSelectedPoint())
+        {
+            return true;
+        }
+    }
+
     return false;
 }
 
 void GraphicObject::DeleteSelectedPoint()
 {
+    for (size_t i = 0; i < PointCount(); i++)
+    {
+        PPoint p = GetPoint(i);
 
+        if (p->is_selected)
+        {
+            this->points.erase(this->points.begin() + i);
+        }
+    }
+
+    for (size_t i = 0; i < ObjCount(); i++)
+    {
+        GetObj(i)->DeleteSelectedPoint();
+    }
 }
 
 //
@@ -306,6 +345,7 @@ PGraf GraphicContainer::GetSelectedObj()
         else
         {
             PGraf g2 = g->GetSelectedObj();
+
             if (g2)
             {
                 return g2;
@@ -318,7 +358,23 @@ PGraf GraphicContainer::GetSelectedObj()
 
 void GraphicContainer::DeleteSelectedObj()
 {
+    for (size_t i = 0; i < ObjCount(); i++)
+    {
+        PGraf g = GetObj(i);
 
+        if (g->IsSelected)
+        {
+            this->objects.erase(this->objects.begin() + i);
+            //g = NULL;
+            //delete g;
+            //this->objects.shrink_to_fit();
+            //vector<PGraf>(this->objects).swap(this->objects);
+        }
+        else
+        {
+            g->DeleteSelectedObj();
+        }
+    }
 }
 
 bool GraphicContainer::SelectObj(int x, int y)

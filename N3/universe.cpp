@@ -30,7 +30,24 @@ PPoint Universe::GetSelectedPoint()
     {
         if (GetObj(i)->HasSelectedPoint())
         {
-            return GetObj(i)->GetSelectedPoint();
+            PPoint p = GetObj(i)->GetSelectedPoint();
+
+            if (p) return p;
+        }
+    }
+
+    return NULL;
+}
+
+PGraf Universe::GetObjSelectedPoint()
+{
+    for (size_t i = 0; i < ObjCount(); i++)
+    {
+        PGraf g = GetObj(i);
+
+        if (g->HasSelectedPoint())
+        {
+            return g;
         }
     }
 
@@ -52,5 +69,8 @@ bool Universe::HasSelectedPoint()
 
 void Universe::DeleteSelectedPoint()
 {
-
+    for (size_t i = 0; i < ObjCount(); i++)
+    {
+        GetObj(i)->DeleteSelectedPoint();
+    }
 }

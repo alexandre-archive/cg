@@ -18,7 +18,7 @@ class Universe : public GraphicContainer
         ~Universe();
         void Draw();
         void Clear() { this->objects.clear(); };
-
+        PGraf  GetObjSelectedPoint();
         PPoint GetSelectedPoint();
         bool   HasSelectedPoint();
         void   DeleteSelectedPoint();

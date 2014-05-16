@@ -90,18 +90,18 @@ void keyPress(unsigned char key, int x, int y)
 
                 if (g)
                 {
-                    if (g->HasSelectedPoint())
-                    {
-                        g->DeleteSelectedPoint();
+                    universe->DeleteSelectedObj();
+                }
 
-                        int size = g->PointCount();
+                g = universe->GetObjSelectedPoint();
 
-                        if (size <= 1)
-                        {
-                            universe->DeleteSelectedObj();
-                        }
-                    }
-                    else
+                if (g)
+                {
+                    g->DeleteSelectedPoint();
+
+                    int size = g->PointCount();
+
+                    if (size <= 1)
                     {
                         universe->DeleteSelectedObj();
                     }
