@@ -365,10 +365,6 @@ void GraphicContainer::DeleteSelectedObj()
         if (g->IsSelected)
         {
             this->objects.erase(this->objects.begin() + i);
-            //g = NULL;
-            //delete g;
-            //this->objects.shrink_to_fit();
-            //vector<PGraf>(this->objects).swap(this->objects);
         }
         else
         {

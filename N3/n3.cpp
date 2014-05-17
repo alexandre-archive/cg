@@ -288,17 +288,16 @@ void mouseClick(int button, int state, int x, int y)
                     currentObj = new GraphicObject();
                     // O 1o ponto duplica-se, para desenha o rastro.
                     currentObj->AddPoint(ps);
-                }
 
-                if (parent)
-                {
-                    parent->AddObj(currentObj);
+                    if (parent)
+                    {
+                        parent->AddObj(currentObj);
+                    }
+                    else
+                    {
+                        universe->AddObj(currentObj);
+                    }
                 }
-                else
-                {
-                    universe->AddObj(currentObj);
-                }
-
                 currentObj->AddPoint(ps);
             }
         }
