@@ -28,9 +28,13 @@ void GraphicObject::ChangePrimitive()
     {
         primitive = GL_LINE_STRIP;
     }
-    else
+    else if (primitive == GL_POLYGON)
     {
         primitive = GL_LINE_LOOP;
+    }
+    else
+    {
+        primitive = GL_POLYGON;
     }
 }
 
