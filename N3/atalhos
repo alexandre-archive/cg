@@ -1,7 +1,8 @@
-ESC     = Fecha a tela
-DEL     = Se edição limpa a tela
-          Se seleção e um poligono selecionado, remove o poligono
-SPACE   = Muda a primitiva do poligono atual. (LOOP ou STRIP)
-TAB     = Altera de seleção para edição
-P       = Se seleção seleciona um poligono ou altera entre o poligono selecionado.
-R, G, B = Alterar as cores do poligono selecionado ou atual em desenho.
+ESC     = Fecha a tela.
+DEL     = Se edição limpa a tela.
+          Se um ponto estiver selecionado, remove-o.
+          Se um poligono estiver selecionado, remove-o.
+SPACE   = Muda a primitiva do poligono atual. (GL_LOOP, GL_STRIP ou GL_POLYGON).
+TAB     = Altera de seleção para edição e vice-versa.
+R, G, B = Alterar as cores do poligono selecionado ou atual em desenho. Usar + e - para aumentar ou diminuir a intensidade.
+L       = Altarar a largura da linha. Usar + e - para aumentar ou diminuir a intensidade.
