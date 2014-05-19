@@ -108,7 +108,10 @@ public:
     size_t PointCount() { return this->points.size(); };
     /**
         Se X e Y corresponderem a um vértice, retorna a posição deste vértice.
-        Caso contrário retornará -1;
+        Caso contrário retornará -1.
+        @param x
+        @param y
+        @return true se estiver dentro.
     **/
     bool   IsPointSelectable(int x, int y);
     PPoint GetSelectedPoint();

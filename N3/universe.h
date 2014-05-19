@@ -16,7 +16,13 @@ class Universe : public GraphicContainer
     public:
         Universe();
         ~Universe();
+        /**
+            Desenha o universo.
+        **/
         void Draw();
+        /**
+            Remove todos os objetos do universo.
+        **/
         void Clear() { this->objects.clear(); };
         PGraf  GetObjSelectedPoint();
         PPoint GetSelectedPoint();
