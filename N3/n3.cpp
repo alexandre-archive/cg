@@ -34,9 +34,15 @@ PGraf currentObj;
 
 int action = 0;
 
-void resize(int width, int height)
+void resize(int nwidth, int nheight)
 {
+    width = nwidth;
+    height = nheight;
 
+    ortho2D_minX = width * -1;
+    ortho2D_maxX = width;
+    ortho2D_minY = height * -1;
+    ortho2D_maxY = height;
 }
 
 void drawMode()
@@ -46,6 +52,7 @@ void drawMode()
 
 void display()
 {
+    glViewport(0.0, 0.0, width, height);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 
