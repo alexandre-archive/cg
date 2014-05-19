@@ -11,6 +11,7 @@
 #endif
 
 #include <iostream>
+#include <cmath>
 #include <string.h>
 #include <vector>
 
@@ -40,6 +41,8 @@ struct BBox
 
 /**
     Converte o espaço X do mouse, para o espaço X do Ortho.
+    @param x
+    @param width
 **/
 inline int convertXSpace(int x, int width)
 {
@@ -48,10 +51,38 @@ inline int convertXSpace(int x, int width)
 
 /**
     Converte o espaço Y do mouse, para o espaço Y do Ortho.
+    @param y
+    @param height
 **/
 inline int convertYSpace(int y, int height)
 {
     return (y * -2) + height;
+}
+
+/**
+    Calcula a distancia euclidiana.
+    @param x1
+    @param y1
+    @param x2
+    @param y2
+**/
+double euclideanDistance(float x1, float y1, float x2, float y2)
+{
+    /*
+    double x = x1 - x2;
+    double y = y1 - y2;
+    double dist;
+
+    dist = pow(x, 2) + pow(y, 2);
+    dist = sqrt(dist);
+
+    return dist; // floor(dist);
+*/
+
+    double x = x1 - x2;
+    double y = y1 - y2;
+
+    return abs(pow(x, 2) + pow(y, 2));
 }
 
 inline void DrawText(int x, int y, char *s)

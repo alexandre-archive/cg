@@ -3,6 +3,8 @@
     #include "graphicobject.h"
 #endif
 
+#define POINT_DIFF 60
+
 //
 // GraphicObject implementations
 //
@@ -189,11 +191,6 @@ void GraphicObject::CalculateBBox()
     }
 }
 
-bool InRange(int value, int nominal, int precision)
-{
-    return value < (nominal + precision) && value > (nominal - precision);
-}
-
 void GraphicObject::AddPoint(Point p)
 {
     points.push_back(p);
@@ -228,7 +225,9 @@ bool GraphicObject::IsPointSelectable(int x, int y)
             return true;
         }
 
-        if (InRange(x, points[i].x, 12) && InRange(y, points[i].y, 12))
+        double diff = euclideanDistance(x, y, points[i].x, points[i].y);
+
+        if (diff < POINT_DIFF)
         {
             nearPointPos = i;
         }
