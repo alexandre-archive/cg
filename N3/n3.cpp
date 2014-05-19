@@ -279,6 +279,8 @@ void mouseClick(int button, int state, int x, int y)
                 Point ps;
                 ps.x = px;
                 ps.y = py;
+                ps.z = 0;
+                ps.is_selected = false;
 
                 PGraf parent = universe->GetSelectedObj();
 

@@ -23,8 +23,8 @@ using namespace std;
 
 struct Point
 {
-    bool is_selected = false;
-    float x = 0, y = 0;
+    bool is_selected;
+    float x, y, z;
 };
 
 typedef Point* PPoint;

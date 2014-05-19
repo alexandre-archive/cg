@@ -7,7 +7,7 @@ else
 endif
 
 CFLAGS = -Wall
-CVERSION = -std=c++11
+CVERSION = -std=c++98
 
 all: clean n3
 
