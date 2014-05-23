@@ -44,6 +44,9 @@ void GraphicObject::Draw()
 {
     glLineWidth(LineWidth);
     glColor3f(BackColor.r, BackColor.g, BackColor.b);
+    
+    glPushMatrix();
+    glMultMatrixd(transform.getDate());
 
     glBegin(primitive);
 
@@ -68,6 +71,8 @@ void GraphicObject::Draw()
     {
         GetObj(i)->Draw();
     }
+
+    glPopMatrix();
 }
 
 void GraphicObject::DrawBBox()
@@ -417,4 +422,18 @@ void GraphicContainer::SelectNone()
         g->SelectNone();
         g->CalculateBBox();
     }
+}
+
+//Listar os pontos do vetor de pontos
+void GraphicObject::dumpPoint()
+{
+    cout << "_______________________ Inicio Vetor de Pontos____________________" << "\n";
+
+    for (size_t i = 0; i < points.size(); i++)
+    {
+        cout << "P" <<  i  <<   "[ "  <<  points[i].x <<  ","  << points[i].y << "]\n";
+    }
+
+    cout << "________________________ Fim Vetor de Pontos_______________________" << "\n";
+    cout << "\n";
 }

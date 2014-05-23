@@ -76,6 +76,9 @@ void display()
 void keyPress(unsigned char key, int x, int y)
 {
     PGraf g = NULL;
+    Transform matrixTranslate, matrixTranslateInverse, matrixScale, matrixRotate, matrixGlobal;
+    double angGlobal = 0;
+    static double RAS_DEG_TO_RAD = 0.017453292519943295769236907684886;
 
     switch (key)
     {
@@ -195,6 +198,243 @@ void keyPress(unsigned char key, int x, int y)
                     break;
                 }
 
+                glutPostRedisplay();
+            }
+        break;
+        /*Mostra o vetor de pontos do Objeto*/
+        case '1':
+            g = universe->GetSelectedObj();
+            if (g)
+            {
+                g->dumpPoint();
+                glutPostRedisplay();
+            }
+        break;
+        //Mostra a matriz de transformação do objeto
+        case '2':
+            g = universe->GetSelectedObj();
+            if (g)
+            {
+                g->transform.dumpMatriz();
+                glutPostRedisplay();
+            }
+        break;
+        //Restaura a matriz de Transformacao
+        case '3':
+            g = universe->GetSelectedObj();
+            if (g)
+            {
+                g->transform.MakeIdentity();
+                glutPostRedisplay();
+            }
+        break;
+        //Translação para a Direita
+        case 'd':
+        case 'D':
+            g = universe->GetSelectedObj();
+            if (g)
+            {
+                Point point;
+                point.x = 2.0;
+                point.y = g->transform.GetPoint().y;
+                matrixTranslate.MakeTranslation(point);
+                g->transform = g->transform.transformMatrix(matrixTranslate);
+                glutPostRedisplay();
+            }
+        break;
+        //Translação para a Esquerda
+        case 'a':
+        case 'A':
+            g = universe->GetSelectedObj();
+            if (g)
+            {
+                Point point;
+                point.x = -2.0;
+                point.y = g->transform.GetPoint().y;
+                matrixTranslate.MakeTranslation(point);
+                g->transform = g->transform.transformMatrix(matrixTranslate);
+                glutPostRedisplay();
+            }
+        break;
+        //Translação para cima
+        case 'w':
+        case 'W':
+            g = universe->GetSelectedObj();
+            if (g)
+            {
+                Point point;
+                point.y = 2.0;
+                point.x = g->transform.GetPoint().x;
+                matrixTranslate.MakeTranslation(point);
+                g->transform = g->transform.transformMatrix(matrixTranslate);
+                glutPostRedisplay();
+            }
+        break;
+        //Translação para baixo
+        case 's':
+        case 'S':
+            g = universe->GetSelectedObj();
+            if (g)
+            {
+                Point point;
+                point.y = -2.0;
+                point.x = g->transform.GetPoint().x;
+                matrixTranslate.MakeTranslation(point);
+                g->transform = g->transform.transformMatrix(matrixTranslate);
+                glutPostRedisplay();
+            }
+        break;
+        //Escala + em relação a origem
+        case '4':
+            g = universe->GetSelectedObj();
+            if (g)
+            {
+                // x   y   z
+                matrixScale.MakeScale(2.0,2.0,1.0);
+                g->transform = g->transform.transformMatrix(matrixScale);
+                glutPostRedisplay();
+            }
+        break;
+        //Escala - em relação a origem
+        case '5':
+            g = universe->GetSelectedObj();
+            if (g)
+            {
+                // x   y   z
+                matrixScale.MakeScale(0.5,0.5,1.0);
+                g->transform = g->transform.transformMatrix(matrixScale);
+                glutPostRedisplay();
+            }
+        break;
+        //Rotação em +10º em relaçao a origem
+        case '6':
+            g = universe->GetSelectedObj();
+            if (g)
+            {
+                angGlobal += 10.0; // rotacao em 10 graus
+                matrixRotate.MakeZRotation(RAS_DEG_TO_RAD * angGlobal);
+                g->transform = g->transform.transformMatrix(matrixRotate);
+                glutPostRedisplay();
+            }
+        break;
+        //Rotação em -10° em relaçao a origem
+        case '7':
+            g = universe->GetSelectedObj();
+            if (g)
+            {
+                angGlobal -= 10.0; // rotacao em 10 graus
+                matrixRotate.MakeZRotation(RAS_DEG_TO_RAD * angGlobal);
+                g->transform = g->transform.transformMatrix(matrixRotate);
+                glutPostRedisplay();
+            }
+        break;
+        //Rotação em +10º em um ponto qualquer.
+        case '8':
+            g = universe->GetSelectedObj();
+            if (g)
+            {
+                Point point;
+                //Translação para a origem do objeto(cento da BBOX)
+                point.x  = - (g->bbox.maxX / 2);
+                point.y  = -(g->bbox.maxY / 2);
+                matrixTranslate.MakeTranslation(point);
+
+                //Rotaciona o objeto em relação a sua origem
+                matrixRotate.MakeZRotation(RAS_DEG_TO_RAD * 10);
+
+                //Translação inversa, voltando a posicao original do objeto
+                point.x  = (g->bbox.maxX / 2); 
+                point.y  = (g->bbox.maxY / 2);
+                matrixTranslateInverse.MakeTranslation(point);
+
+                matrixGlobal = matrixGlobal.transformMatrix(matrixTranslateInverse);
+                matrixGlobal = matrixGlobal.transformMatrix(matrixRotate);
+                matrixGlobal = matrixGlobal.transformMatrix(matrixTranslate);
+
+                g->transform =  g->transform.transformMatrix(matrixGlobal);
+                glutPostRedisplay();
+            }
+        break;
+        //Rotação em -10º em um ponto qualquer.
+        case '9':
+            g = universe->GetSelectedObj();
+            if (g)
+            {
+                Point point;
+                //Translação para a origem do objeto(cento da BBOX)
+                point.x  = - (g->bbox.maxX / 2);
+                point.y  = -(g->bbox.maxY / 2);
+                matrixTranslate.MakeTranslation(point);
+
+                //Rotaciona o objeto em relação a sua origem
+                matrixRotate.MakeZRotation(RAS_DEG_TO_RAD * -10);
+
+                //Translação inversa, voltando a posicao original do objeto
+                point.x  = (g->bbox.maxX / 2); 
+                point.y  = (g->bbox.maxY / 2);
+                matrixTranslateInverse.MakeTranslation(point);
+
+                matrixGlobal = matrixGlobal.transformMatrix(matrixTranslateInverse);
+                matrixGlobal = matrixGlobal.transformMatrix(matrixRotate);
+                matrixGlobal = matrixGlobal.transformMatrix(matrixTranslate);
+
+                g->transform =  g->transform.transformMatrix(matrixGlobal);
+                glutPostRedisplay();
+            }
+        break;
+        //Escala - em um ponto qualquer.
+        case 'Z':   
+        case 'z':
+            g = universe->GetSelectedObj();
+            if (g)
+            {
+                Point point;
+                //Translação para a origem do objeto(cento da BBOX)
+                point.x  = - (g->bbox.maxX / 2);
+                point.y  = -(g->bbox.maxY / 2);
+                matrixTranslate.MakeTranslation(point);
+
+                //Escala reduzindo objeto pela metade em relacao a origem
+                matrixScale.MakeScale(0.5, 0.5, 1.0);
+
+                //Translação inversa, voltando a posicao original do objeto
+                point.x  = (g->bbox.maxX / 2); 
+                point.y  = (g->bbox.maxY / 2);
+                matrixTranslateInverse.MakeTranslation(point);
+
+                matrixGlobal = matrixGlobal.transformMatrix(matrixTranslateInverse);
+                matrixGlobal = matrixGlobal.transformMatrix(matrixScale);
+                matrixGlobal = matrixGlobal.transformMatrix(matrixTranslate);
+
+                g->transform =  g->transform.transformMatrix(matrixGlobal);
+                glutPostRedisplay();
+            }
+        break;
+        //Escala + em um ponto qualquer.
+        case 'X':
+        case 'x':
+            g = universe->GetSelectedObj();
+            if (g)
+            {
+                Point point;
+                //Translação para a origem do objeto(cento da BBOX)
+                point.x  = - (g->bbox.maxX / 2);
+                point.y  = -(g->bbox.maxY / 2);
+                matrixTranslate.MakeTranslation(point);
+
+                //Escala aumentando objeto pela metade em relacao a origem
+                matrixScale.MakeScale(2.0, 2.0, 1.0);
+
+                //Translação inversa, voltando a posicao original do objeto
+                point.x  = (g->bbox.maxX / 2); 
+                point.y  = (g->bbox.maxY / 2);
+                matrixTranslateInverse.MakeTranslation(point);
+
+                matrixGlobal = matrixGlobal.transformMatrix(matrixTranslateInverse);
+                matrixGlobal = matrixGlobal.transformMatrix(matrixScale);
+                matrixGlobal = matrixGlobal.transformMatrix(matrixTranslate);
+
+                g->transform =  g->transform.transformMatrix(matrixGlobal);
                 glutPostRedisplay();
             }
         break;

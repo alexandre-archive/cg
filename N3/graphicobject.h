@@ -2,6 +2,7 @@
     #define BASE_H
     #include "base.h"
 #endif
+#include "Transform.h"
 
 class GraphicObject;
 
@@ -61,7 +62,6 @@ class GraphicObject : public GraphicContainer
 protected:
     int            primitive;
     vector<Point>  points;
-    BBox           bbox;
     /**
         Desenha um ponto no local do vértice selecionado.
         Facilitando a identificação.
@@ -72,9 +72,11 @@ protected:
     **/
     void DrawBBox();
 public:
-    bool   IsSelected;
-    Color  BackColor;
-    float  LineWidth;
+    bool       IsSelected;
+    Color      BackColor;
+    float      LineWidth;
+    Transform  transform;
+    BBox       bbox;
 
     GraphicObject();
     ~GraphicObject();
@@ -117,4 +119,9 @@ public:
     PPoint GetSelectedPoint();
     bool   HasSelectedPoint();
     void   DeleteSelectedPoint();
+
+    /**
+        Lista todos os vertices do Objeto Grafico
+    **/
+    void   dumpPoint();
 };
